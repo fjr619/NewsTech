@@ -9,7 +9,10 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
@@ -80,6 +83,45 @@ private val DarkColors = darkColorScheme(
     outlineVariant = md_theme_dark_outlineVariant,
     scrim = md_theme_dark_scrim,
 )
+
+data class CustomColorsPalette(
+    val displaySmall:Color = Color.Unspecified,
+    val textMedium:Color = Color.Unspecified,
+    val textTitle:Color = Color.Unspecified,
+    val body:Color = Color.Unspecified,
+    val inputBackground:Color = Color.Unspecified,
+    val placeholder:Color = Color.Unspecified,
+    val shimmer:Color = Color.Unspecified,
+)
+
+val LocalCustomColorsPalette = staticCompositionLocalOf { CustomColorsPalette() }
+
+val MaterialTheme.customColorsPalette: CustomColorsPalette
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalCustomColorsPalette.current
+
+
+private val LightCustomColor = CustomColorsPalette(
+    displaySmall = Color(0xFF000000),
+    textMedium = Color(0xFF4E4B66),
+    textTitle = Color(0xFF000000),
+    body = Color(0xFF4E4B66),
+    inputBackground = Color(0xFFFFFFFF),
+    placeholder = Color(0xFFA0A3BD),
+    shimmer = Color(0xFFC3C3C3)
+)
+
+private val DarkCustomColor = CustomColorsPalette(
+    displaySmall = Color(0xFFFFFFFF),
+    textMedium = Color(0xFFB0B3B8),
+    textTitle = Color(0xFFE4E6EB),
+    body = Color(0xFFB0B3B8),
+    inputBackground = Color(0xFF3A3B3C),
+    placeholder = Color(0xFFDDDDDD),
+    shimmer = Color(0xFF414243)
+)
+
 @Composable
 fun NewsLOCTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -104,9 +146,17 @@ fun NewsLOCTheme(
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    val customColorsPalette =
+        if (darkTheme) DarkCustomColor
+        else LightCustomColor
+
+    CompositionLocalProvider(
+        LocalCustomColorsPalette provides customColorsPalette
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }

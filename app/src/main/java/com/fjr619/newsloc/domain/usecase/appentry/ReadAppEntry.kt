@@ -7,5 +7,5 @@ import javax.inject.Inject
 class ReadAppEntry @Inject constructor(
     private val localUserPreferences: LocalUserPreferences
 ) {
-    suspend operator fun invoke(): Flow<Boolean> = localUserPreferences.readAppEntry()
+    operator fun invoke(): Flow<Boolean> = localUserPreferences.readAppEntry()
 }

@@ -23,7 +23,7 @@ class OnboardingViewModel @Inject constructor(
 
     private fun saveAppEntry() {
         viewModelScope.launch {
-            appEntryUseCases.saveAppEntry
+            appEntryUseCases.saveAppEntry()
         }
     }
 }

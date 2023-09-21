@@ -22,13 +22,16 @@ import androidx.compose.ui.unit.dp
 import com.fjr619.newsloc.presentation.Dimens
 import com.fjr619.newsloc.presentation.common.NewsButton
 import com.fjr619.newsloc.presentation.common.NewsTextButton
+import com.fjr619.newsloc.presentation.onboarding.components.OnboardingEvent
 import com.fjr619.newsloc.presentation.onboarding.components.OnboardingPage
 import com.fjr619.newsloc.presentation.onboarding.components.PagerIndicator
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun OnboardingScreen() {
+fun OnboardingScreen(
+    event: (OnboardingEvent) -> Unit
+) {
     Column(modifier = Modifier.fillMaxSize()) {
         val pagerState = rememberPagerState(
             initialPage = 0
@@ -92,8 +95,8 @@ fun OnboardingScreen() {
                     text = buttonState.value[1],
                     onClick = {
                         scope.launch {
-                            if (pagerState.currentPage == 3){
-                                //Navigate to the main screen and save a value in datastore preferences
+                            if (pagerState.currentPage == 2){
+                                event(OnboardingEvent.SaveAppEntry)
                             }else{
                                 pagerState.animateScrollToPage(
                                     page = pagerState.currentPage + 1

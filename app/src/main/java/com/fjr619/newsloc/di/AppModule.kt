@@ -1,11 +1,8 @@
 package com.fjr619.newsloc.di
 
-import android.app.Application
-import com.fjr619.newsloc.data.preferences.LocalUserPreferencesImpl
-import com.fjr619.newsloc.domain.preferences.LocalUserPreferences
-import com.fjr619.newsloc.domain.usecase.AppEntryUseCases
-import com.fjr619.newsloc.domain.usecase.ReadAppEntry
-import com.fjr619.newsloc.domain.usecase.SaveAppEntry
+import com.fjr619.newsloc.domain.usecase.appentry.AppEntryUseCases
+import com.fjr619.newsloc.domain.usecase.appentry.ReadAppEntry
+import com.fjr619.newsloc.domain.usecase.appentry.SaveAppEntry
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

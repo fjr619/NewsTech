@@ -56,7 +56,10 @@ fun ArticleCard(
             modifier = Modifier
                 .size(ArticleCardSize)
                 .clip(MaterialTheme.shapes.medium),
-            model = ImageRequest.Builder(context).data(article.urlToImage).build(),
+            model = ImageRequest.Builder(context)
+                .data(article.urlToImage)
+                .error(R.drawable.ic_splash)
+                .build(),
             contentDescription = null,
             contentScale = ContentScale.Crop
         )

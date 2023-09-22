@@ -6,6 +6,7 @@ import com.fjr619.newsloc.domain.usecase.appentry.ReadAppEntry
 import com.fjr619.newsloc.domain.usecase.appentry.SaveAppEntry
 import com.fjr619.newsloc.domain.usecase.news.GetNews
 import com.fjr619.newsloc.domain.usecase.news.NewsUseCases
+import com.fjr619.newsloc.domain.usecase.news.SearchNews
 import com.fjr619.newsloc.util.Constants
 import dagger.Module
 import dagger.Provides
@@ -43,8 +44,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideNewsUsecases(
-        getNews: GetNews
+        getNews: GetNews,
+        searchNews: SearchNews
     ) = NewsUseCases(
-        getNews
+        getNews, searchNews
     )
 }

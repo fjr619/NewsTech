@@ -2,13 +2,11 @@ package com.fjr619.newsloc.presentation.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
@@ -21,7 +19,7 @@ import com.fjr619.newsloc.presentation.home.components.ArticleCard
 fun ArticlesList(
     modifier: Modifier = Modifier,
     articles: LazyPagingItems<Article>,
-    onClick: (Article) -> Unit
+    onClickCard: (Article) -> Unit
 ) {
 
     val handlePagingResult = handlePagingResult(articles)
@@ -38,7 +36,7 @@ fun ArticlesList(
             ) {
                 articles[it]?.let { article ->
                     ArticleCard(
-                        article = article, onClick = { onClick(article) })
+                        article = article, onClick = { onClickCard(article) })
                 }
             }
         }

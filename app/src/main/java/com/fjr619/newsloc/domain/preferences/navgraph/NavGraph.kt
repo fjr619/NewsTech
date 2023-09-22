@@ -20,6 +20,8 @@ import com.fjr619.newsloc.presentation.home.HomeScreen
 import com.fjr619.newsloc.presentation.home.HomeViewModel
 import com.fjr619.newsloc.presentation.onboarding.OnboardingScreen
 import com.fjr619.newsloc.presentation.onboarding.OnboardingViewModel
+import com.fjr619.newsloc.presentation.search.SearchScreen
+import com.fjr619.newsloc.presentation.search.SearchViewModel
 
 @Composable
 fun NavGraph(
@@ -45,11 +47,14 @@ fun NavGraph(
             composable(route = Route.HomeScreen.route) {
                 val viewModel: HomeViewModel = hiltViewModel()
                 HomeScreen(articles = viewModel.news.collectAsLazyPagingItems(), navigate = {
-                    //TODO: navigate to other screen
+                    navController.navigate(it)
                 })
             }
             composable(route = Route.SearchScreen.route) {
-
+                val viewModel: SearchViewModel = hiltViewModel()
+                val state = viewModel.state.value
+                SearchScreen(state = state, event = viewModel::onEvent, navigate = {
+                })
             }
             composable(route = Route.BookmarkScreen.route) {
 

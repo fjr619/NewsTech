@@ -1,6 +1,5 @@
 package com.fjr619.newsloc.presentation.home
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
@@ -72,12 +71,8 @@ fun HomeScreen(
                 .fillMaxWidth(),
             text = "",
             readOnly = true,
-            onValueChange = {
-                //TODO: on value change
-            },
-            onSearch = {
-                //TODO: on search
-            },
+            onValueChange = {},
+            onSearch = {},
             onClick = {
                 navigate(Route.SearchScreen.route)
             }
@@ -97,9 +92,9 @@ fun HomeScreen(
 
         ArticlesList(
             articles = articles,
-            onClick = {
+            onClickCard = {
                 //TODO: Navigate to Details Screen
-                Log.e("TAG", "title $titles")
+                navigate(Route.DetailsScreen.route)
             }
         )
     }

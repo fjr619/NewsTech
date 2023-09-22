@@ -15,6 +15,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.fjr619.newsloc.presentation.home.HomeScreen
+import com.fjr619.newsloc.presentation.home.HomeViewModel
 import com.fjr619.newsloc.presentation.onboarding.OnboardingScreen
 import com.fjr619.newsloc.presentation.onboarding.OnboardingViewModel
 
@@ -40,14 +43,10 @@ fun NavGraph(
             startDestination = Route.HomeScreen.route
         ) {
             composable(route = Route.HomeScreen.route) {
-                Surface(
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize().safeDrawingPadding(),
-                    ) {
-                        Text(text = "home screen")
-                    }
-                }
+                val viewModel: HomeViewModel = hiltViewModel()
+                HomeScreen(articles = viewModel.news.collectAsLazyPagingItems(), navigate = {
+                    //TODO: navigate to other screen
+                })
             }
             composable(route = Route.SearchScreen.route) {
 

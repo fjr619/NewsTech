@@ -30,6 +30,7 @@ import coil.request.ImageRequest
 import com.fjr619.newsloc.R
 import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.domain.model.Source
+import com.fjr619.newsloc.presentation.Dimens
 import com.fjr619.newsloc.presentation.Dimens.ArticleCardSize
 import com.fjr619.newsloc.presentation.Dimens.ExtraSmallPadding
 import com.fjr619.newsloc.presentation.Dimens.ExtraSmallPadding2
@@ -46,7 +47,9 @@ fun ArticleCard(
 
     val context = LocalContext.current
     Row(
-        modifier = modifier.clickable { onClick?.invoke() },
+        modifier = modifier
+            .clickable { onClick?.invoke() }
+            .padding(horizontal = Dimens.MediumPadding1, vertical = Dimens.ExtraSmallPadding2),
 
         ) {
         AsyncImage(
@@ -57,6 +60,9 @@ fun ArticleCard(
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
+
+        Spacer(modifier = Modifier.width(Dimens.ExtraSmallPadding2))
+
         Column(
             verticalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
@@ -89,7 +95,7 @@ fun ArticleCard(
                 Text(
                     text = article.publishedAt,
                     style = MaterialTheme.typography.labelSmall,
-                    color = Color.Blue
+                    color = MaterialTheme.customColorsPalette.body
                 )
             }
         }

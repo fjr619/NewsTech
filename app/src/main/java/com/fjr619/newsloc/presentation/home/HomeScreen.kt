@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -34,7 +35,8 @@ import com.fjr619.newsloc.ui.theme.customColorsPalette
 @Composable
 fun HomeScreen(
     articles: LazyPagingItems<Article>,
-    navigate: (String) -> Unit
+    navigate: (String) -> Unit,
+    navigateToDetail: (Article) -> Unit
 ) {
     val titles by remember {
         derivedStateOf {
@@ -48,54 +50,57 @@ fun HomeScreen(
         }
     }
 
-    Column(
+    Surface(
         modifier = Modifier
             .fillMaxSize()
-//            .padding(top = Dimens.MediumPadding1)
-            .safeDrawingPadding()
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_logo),
-            contentDescription = null,
+        Column(
             modifier = Modifier
-                .width(150.dp)
-                .height(30.dp)
-                .padding(horizontal = MediumPadding1)
-        )
+                .fillMaxSize()
+//            .padding(top = Dimens.MediumPadding1)
+                .safeDrawingPadding()
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_logo),
+                contentDescription = null,
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(30.dp)
+                    .padding(horizontal = MediumPadding1)
+            )
 
-        Spacer(modifier = Modifier.height(MediumPadding1))
+            Spacer(modifier = Modifier.height(MediumPadding1))
 
-        SearchBar(
-            modifier = Modifier
-                .padding(horizontal = MediumPadding1)
-                .fillMaxWidth(),
-            text = "",
-            readOnly = true,
-            onValueChange = {},
-            onSearch = {},
-            onClick = {
-                navigate(Route.SearchScreen.route)
-            }
-        )
+            SearchBar(
+                modifier = Modifier
+                    .padding(horizontal = MediumPadding1)
+                    .fillMaxWidth(),
+                text = "",
+                readOnly = true,
+                onValueChange = {},
+                onSearch = {},
+                onClick = {
+                    navigate(Route.SearchScreen.route)
+                }
+            )
 
-        Spacer(modifier = Modifier.height(MediumPadding1))
+            Spacer(modifier = Modifier.height(MediumPadding1))
 
-        Text(
-            text = titles, modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = MediumPadding1)
-                .basicMarquee(), fontSize = 12.sp,
-            color = MaterialTheme.customColorsPalette.placeholder
-        )
+            Text(
+                text = titles, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = MediumPadding1)
+                    .basicMarquee(), fontSize = 12.sp,
+                color = MaterialTheme.customColorsPalette.placeholder
+            )
 
-        Spacer(modifier = Modifier.height(MediumPadding1))
+            Spacer(modifier = Modifier.height(MediumPadding1))
 
-        ArticlesList(
-            articles = articles,
-            onClickCard = {
-                //TODO: Navigate to Details Screen
-                navigate(Route.DetailsScreen.route)
-            }
-        )
+            ArticlesList(
+                articles = articles,
+                onClickCard = navigateToDetail
+            )
+        }
     }
+
 }

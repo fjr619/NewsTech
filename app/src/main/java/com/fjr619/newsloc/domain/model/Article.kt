@@ -1,12 +1,16 @@
 package com.fjr619.newsloc.domain.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Article(
     val author: String,
-    val content: Any,
-    val description: Any,
+    val content: String,
+    val description: String,
     val publishedAt: String,
     val source: Source,
     val title: String,
     val url: String,
-    val urlToImage: Any
-)
+    val urlToImage: String
+): Parcelable

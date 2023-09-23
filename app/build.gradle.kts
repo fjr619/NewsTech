@@ -3,6 +3,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id ("kotlin-parcelize")
+
 }
 
 android {
@@ -104,4 +106,6 @@ dependencies {
     implementation ("androidx.room:room-runtime:2.5.2")
     kapt ("androidx.room:room-compiler:2.5.2")
     implementation ("androidx.room:room-ktx:2.5.2")
+
+    implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 }

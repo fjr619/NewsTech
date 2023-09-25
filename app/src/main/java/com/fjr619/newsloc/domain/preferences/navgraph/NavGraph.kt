@@ -34,7 +34,6 @@ import com.fjr619.newsloc.presentation.onboarding.OnboardingViewModel
 import com.fjr619.newsloc.presentation.search.SearchScreen
 import com.fjr619.newsloc.presentation.search.SearchViewModel
 import com.fjr619.newsloc.util.AnimationTransition
-import com.fjr619.newsloc.util.UIComponent
 
 @Composable
 fun NavGraph(

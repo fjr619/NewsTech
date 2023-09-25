@@ -1,5 +1,10 @@
 package com.fjr619.newsloc.di
 
+import android.app.Application
+import androidx.room.Room
+import com.fjr619.newsloc.data.local.NewsDao
+import com.fjr619.newsloc.data.local.NewsDatabase
+import com.fjr619.newsloc.data.local.NewsTypeConvertor
 import com.fjr619.newsloc.data.remote.NewsApi
 import com.fjr619.newsloc.domain.usecase.appentry.AppEntryUseCases
 import com.fjr619.newsloc.domain.usecase.appentry.ReadAppEntry
@@ -49,4 +54,24 @@ object AppModule {
     ) = NewsUseCases(
         getNews, searchNews
     )
+
+    @Provides
+    @Singleton
+    fun provideNewsDatabase(
+        application: Application
+    ): NewsDatabase {
+        return Room.databaseBuilder(
+            context = application,
+            klass = NewsDatabase::class.java,
+            name = "news_db"
+        ).addTypeConverter(NewsTypeConvertor())
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNewsDao(
+        newsDatabase: NewsDatabase
+    ): NewsDao = newsDatabase.newsDao
 }

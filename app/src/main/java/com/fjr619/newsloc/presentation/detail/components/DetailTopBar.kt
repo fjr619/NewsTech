@@ -3,6 +3,8 @@ package com.fjr619.newsloc.presentation.detail.components
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -17,12 +19,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.fjr619.newsloc.R
+import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.ui.theme.NewsLOCTheme
 import com.fjr619.newsloc.ui.theme.customColorsPalette
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailTopBar(
+    bookmarkArticle: Article? = null,
     onBrowsingClick: () -> Unit,
     onShareClick: () -> Unit,
     onBookMarkClick: () -> Unit,
@@ -48,10 +52,7 @@ fun DetailTopBar(
         actions = {
 
             IconButton(onClick = onBookMarkClick) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_bookmark),
-                    contentDescription = null
-                )
+                Icon(painter = painterResource(if (bookmarkArticle == null) R.drawable.ic_bookmark else R.drawable.ic_bookmar_filled), contentDescription = null)
             }
             IconButton(onClick = onShareClick) {
                 Icon(
@@ -77,8 +78,7 @@ fun DetailsTopBarPreview() {
         DetailTopBar(
             onShareClick = { /*TODO*/ },
             onBookMarkClick = { /*TODO*/ },
-            onBrowsingClick = {}) {
-
+            onBrowsingClick = {},) {
         }
     }
 }

@@ -18,12 +18,17 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.fjr619.newsloc.domain.preferences.navgraph.NavGraph
+import com.fjr619.newsloc.domain.usecase.news.NewsUseCases
 import com.fjr619.newsloc.ui.theme.NewsLOCTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     val viewModel by viewModels<MainViewModel>()
+
+    @Inject
+    lateinit var newsUseCases: NewsUseCases
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +49,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavGraph(
                         navController = rememberNavController(),
-                        startDestination = viewModel.startDestination.value
+                        startDestination = viewModel.startDestination.value,
+                                newsUseCases = newsUseCases
                     )
                 }
             }

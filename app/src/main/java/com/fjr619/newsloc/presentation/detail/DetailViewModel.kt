@@ -2,35 +2,49 @@ package com.fjr619.newsloc.presentation.detail
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.savedstate.SavedStateRegistryOwner
 import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.domain.usecase.news.NewsUseCases
 import com.fjr619.newsloc.util.UIComponent
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class DetailViewModelFactory(
+class DetailViewModel @AssistedInject constructor(
     private val newsUseCases: NewsUseCases,
-    private val article: Article?
-) :
-    ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T = DetailViewModel(newsUseCases, article) as T
-}
-
-class DetailViewModel constructor(
-    private val newsUseCases: NewsUseCases,
-    private val article: Article?
+    @Assisted private val article: Article?
 ) : ViewModel() {
 
     var sideEffect: MutableSharedFlow<UIComponent> = MutableSharedFlow()
 
     var bookmarkArticle = mutableStateOf<Article?>(null)
         private set
+
+    @AssistedFactory
+    interface Factory {
+        fun create(article: Article?): DetailViewModel
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    companion object {
+        fun provideFactory(
+            assistedFactory: Factory,
+            article: Article?
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return assistedFactory.create(article) as T
+            }
+        }
+    }
 
 
     init {

@@ -1,4 +1,4 @@
-package com.fjr619.newsloc.domain.preferences.navgraph
+package com.fjr619.newsloc.presentation.navgraph
 
 import androidx.navigation.NamedNavArgument
 
@@ -19,4 +19,6 @@ sealed class Route(
     object AppStartNavigation : Route(route = "appStartNavigation")
 
     object NewsNavigation : Route(route = "newsNavigation")
+
+    object RootNavigation : Route(route = "rootNavigation")
 }

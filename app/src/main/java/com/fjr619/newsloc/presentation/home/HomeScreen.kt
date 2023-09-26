@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.paging.compose.LazyPagingItems
 import com.fjr619.newsloc.R
 import com.fjr619.newsloc.domain.model.Article
-import com.fjr619.newsloc.domain.preferences.navgraph.Route
+import com.fjr619.newsloc.presentation.navgraph.Route
 import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
 import com.fjr619.newsloc.presentation.common.ArticlesList
 import com.fjr619.newsloc.presentation.common.SearchBar
@@ -35,7 +35,7 @@ import com.fjr619.newsloc.ui.theme.customColorsPalette
 @Composable
 fun HomeScreen(
     articles: LazyPagingItems<Article>,
-    navigate: (String) -> Unit,
+    navigateToSearch: () -> Unit,
     navigateToDetail: (Article) -> Unit
 ) {
     val titles by remember {
@@ -80,7 +80,7 @@ fun HomeScreen(
                 onValueChange = {},
                 onSearch = {},
                 onClick = {
-                    navigate(Route.SearchScreen.route)
+                    navigateToSearch()
                 }
             )
 

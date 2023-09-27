@@ -32,7 +32,9 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     val viewModel by viewModels<MainViewModel>()
 
-
+    /**
+     * https://medium.com/scalereal/providing-assistedinject-supported-viewmodel-for-composable-using-hilt-ae973632e29a
+     */
     @EntryPoint
     @InstallIn(ActivityComponent::class)
     interface ViewModelFactoryProvider {

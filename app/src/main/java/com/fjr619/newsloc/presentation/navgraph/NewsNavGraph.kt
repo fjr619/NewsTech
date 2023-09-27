@@ -1,26 +1,24 @@
 package com.fjr619.newsloc.presentation.navgraph
 
 import android.app.Activity
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.fjr619.newsloc.domain.model.Article
+import com.fjr619.newsloc.presentation.bookmark.BookmarkScreen
+import com.fjr619.newsloc.presentation.bookmark.BookmarkViewModel
 import com.fjr619.newsloc.presentation.detail.DetailScreen
 import com.fjr619.newsloc.presentation.detail.DetailViewModel
 import com.fjr619.newsloc.presentation.home.HomeScreen
@@ -105,12 +103,13 @@ fun NewsGraph(
         }
 
         composable(route = BottomBarScreen.Bookmark.route) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = BottomBarScreen.Bookmark.title)
-            }
+            val viewModel: BookmarkViewModel = hiltViewModel()
+            val state by viewModel.state
+            BookmarkScreen(state = state, navigateToDetails = { article ->
+                navigateToDetails(
+                    navController = navController, article = article
+                )
+            })
         }
     }
 }

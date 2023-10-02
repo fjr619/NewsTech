@@ -27,8 +27,8 @@ fun ArticlesList2(
     }
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(MediumPadding1),
-        contentPadding = PaddingValues(all = ExtraSmallPadding2)
+//        verticalArrangement = Arrangement.spacedBy(MediumPadding1),
+//        contentPadding = PaddingValues(all = ExtraSmallPadding2)
     ) {
         items(
             count = articles.size,

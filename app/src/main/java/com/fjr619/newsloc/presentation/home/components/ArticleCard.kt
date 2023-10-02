@@ -49,7 +49,7 @@ fun ArticleCard(
     Row(
         modifier = modifier
             .clickable { onClick?.invoke() }
-            .padding(horizontal = Dimens.MediumPadding1, vertical = Dimens.ExtraSmallPadding2),
+            .padding(horizontal = Dimens.MediumPadding1, vertical = ExtraSmallPadding2),
 
         ) {
         AsyncImage(
@@ -64,7 +64,7 @@ fun ArticleCard(
             contentScale = ContentScale.Crop
         )
 
-        Spacer(modifier = Modifier.width(Dimens.ExtraSmallPadding2))
+        Spacer(modifier = Modifier.width(ExtraSmallPadding2))
 
         Column(
             verticalArrangement = Arrangement.SpaceAround,

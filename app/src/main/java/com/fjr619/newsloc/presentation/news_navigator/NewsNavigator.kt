@@ -27,8 +27,8 @@ fun NewsNavigator() {
             })
         }
     ) {
-        NewsGraph(navController) {
-            navigateToTab(navController, it)
+        NewsGraph(paddingValues = it, navController = navController) { bottomBarScreen ->
+            navigateToTab(navController, bottomBarScreen)
         }
     }
 }

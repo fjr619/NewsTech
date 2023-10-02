@@ -5,11 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,7 +15,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,7 +23,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.fjr619.newsloc.R
@@ -38,7 +33,7 @@ import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
 import com.fjr619.newsloc.presentation.detail.components.DetailTopBar
 import com.fjr619.newsloc.ui.theme.NewsLOCTheme
 import com.fjr619.newsloc.ui.theme.customColorsPalette
-import com.fjr619.newsloc.util.UIComponent
+import com.fjr619.newsloc.util.UiEffect
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -46,17 +41,17 @@ fun DetailScreen(
     article: Article,
     bookmarkArticle: Article?,
     event: (DetailEvent) -> Unit,
-    sideEffect: UIComponent?,
+    sideEffect: UiEffect?,
     navigateUp: () -> Unit
 ) {
     val context = LocalContext.current
 
     LaunchedEffect(key1 = sideEffect) {
-        sideEffect?.let {
-            when(sideEffect){
-                is UIComponent.Toast ->{
-                    Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
-//                    event(DetailEvent.RemoveSideEffect)
+
+        sideEffect.apply {
+            when(this){
+                is UiEffect.Toast ->{
+                    Toast.makeText(context, message.asString(context), Toast.LENGTH_SHORT).show()
                 }
                 else -> Unit
             }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +35,7 @@ import com.fjr619.newsloc.ui.theme.customColorsPalette
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
+    paddingValues: PaddingValues,
     articles: LazyPagingItems<Article>,
     navigateToSearch: () -> Unit,
     navigateToDetail: (Article) -> Unit
@@ -53,12 +55,13 @@ fun HomeScreen(
     Surface(
         modifier = Modifier
             .fillMaxSize()
+            .padding(paddingValues)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
 //            .padding(top = Dimens.MediumPadding1)
-                .safeDrawingPadding()
+//                .safeDrawingPadding()
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_logo),

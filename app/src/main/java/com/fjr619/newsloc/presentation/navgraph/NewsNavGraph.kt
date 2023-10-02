@@ -1,14 +1,20 @@
 package com.fjr619.newsloc.presentation.navgraph
 
 import android.app.Activity
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionContext
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -27,11 +33,13 @@ import com.fjr619.newsloc.presentation.mainactivity.MainActivity
 import com.fjr619.newsloc.presentation.news_navigator.BottomBarScreen
 import com.fjr619.newsloc.presentation.search.SearchScreen
 import com.fjr619.newsloc.presentation.search.SearchViewModel
-import com.fjr619.newsloc.util.UIComponent
+import com.fjr619.newsloc.util.UiEffect
+import com.fjr619.newsloc.util.UiText
 import dagger.hilt.android.EntryPointAccessors
 
 @Composable
 fun NewsGraph(
+    paddingValues: PaddingValues,
     navController: NavHostController,
     onItemClick: (BottomBarScreen) -> Unit
 ) {
@@ -44,6 +52,7 @@ fun NewsGraph(
         composable(route = Route.HomeScreen.route) { navBackEntry ->
             val viewModel: HomeViewModel = hiltViewModel()
             HomeScreen(
+                paddingValues = paddingValues,
                 articles = viewModel.news.collectAsLazyPagingItems(),
                 navigateToSearch = {
                     onItemClick(BottomBarScreen.Search)
@@ -72,7 +81,7 @@ fun NewsGraph(
                 navController.previousBackStackEntry?.savedStateHandle?.get<Article>("article")
             }
 
-            it.savedStateHandle.set("aticle", article)
+//            it.savedStateHandle["aticle"] = article
 
             val factory = remember {
                 derivedStateOf {
@@ -87,6 +96,10 @@ fun NewsGraph(
                 factory = DetailViewModel.provideFactory(factory.value, article)
             )
 
+            val sideEffect by viewModel.sideEffect.collectAsStateWithLifecycle(
+                initialValue = UiEffect.None()
+            )
+
             article?.let {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     DetailScreen(
@@ -94,9 +107,7 @@ fun NewsGraph(
                         bookmarkArticle = viewModel.bookmarkArticle.value,
                         event = viewModel::onEvent,
                         navigateUp = { navController.popBackStack() },
-                        sideEffect = viewModel.sideEffect.collectAsStateWithLifecycle(
-                            initialValue = UIComponent.None()
-                        ).value
+                        sideEffect = sideEffect
                     )
                 }
             }
@@ -105,7 +116,7 @@ fun NewsGraph(
         composable(route = BottomBarScreen.Bookmark.route) {
             val viewModel: BookmarkViewModel = hiltViewModel()
             val state by viewModel.state
-            BookmarkScreen(state = state, navigateToDetails = { article ->
+            BookmarkScreen(paddingValues = paddingValues, state = state, navigateToDetails = { article ->
                 navigateToDetails(
                     navController = navController, article = article
                 )

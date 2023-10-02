@@ -2,29 +2,27 @@ package com.fjr619.newsloc.presentation.detail
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.savedstate.SavedStateRegistryOwner
 import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.domain.usecase.news.NewsUseCases
-import com.fjr619.newsloc.util.UIComponent
+import com.fjr619.newsloc.util.UiEffect
+import com.fjr619.newsloc.util.UiText
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class DetailViewModel @AssistedInject constructor(
     private val newsUseCases: NewsUseCases,
     @Assisted private val article: Article?
 ) : ViewModel() {
 
-    var sideEffect: MutableSharedFlow<UIComponent> = MutableSharedFlow()
+    private var _sideEffect: MutableSharedFlow<UiEffect> = MutableSharedFlow()
+    val sideEffect = _sideEffect.asSharedFlow()
 
     var bookmarkArticle = mutableStateOf<Article?>(null)
         private set
@@ -63,7 +61,6 @@ class DetailViewModel @AssistedInject constructor(
         when (event) {
             is DetailEvent.GetBookmarkArticle -> {
                 viewModelScope.launch {
-                    Log.e("TAG", "launch GetBookmarkArticle")
                     getBookmarkArticle(event.article)
                 }
             }
@@ -87,12 +84,12 @@ class DetailViewModel @AssistedInject constructor(
     private suspend fun deleteArticle(article: Article) {
         newsUseCases.deleteArticle(article = article)
         bookmarkArticle.value = null
-        sideEffect.emit(UIComponent.Toast("Article deleted"))
+        _sideEffect.emit(UiEffect.Toast(UiText.DynamicString("Article deleted")))
     }
 
     private suspend fun upsertArticle(article: Article) {
         newsUseCases.upsertArticle(article = article)
         bookmarkArticle.value = article
-        sideEffect.emit(UIComponent.Toast("Article Inserted"))
+        _sideEffect.emit(UiEffect.Toast(UiText.DynamicString("Article Inserted")))
     }
 }

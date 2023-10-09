@@ -1,23 +1,20 @@
 package com.fjr619.newsloc.presentation.navgraph
 
 import android.app.Activity
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionContext
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -34,14 +31,14 @@ import com.fjr619.newsloc.presentation.news_navigator.BottomBarScreen
 import com.fjr619.newsloc.presentation.search.SearchScreen
 import com.fjr619.newsloc.presentation.search.SearchViewModel
 import com.fjr619.newsloc.util.UiEffect
-import com.fjr619.newsloc.util.UiText
 import dagger.hilt.android.EntryPointAccessors
 
 @Composable
 fun NewsGraph(
     paddingValues: PaddingValues,
     navController: NavHostController,
-    onItemClick: (BottomBarScreen) -> Unit
+    onNavigateBottomBar: (BottomBarScreen) -> Unit,
+    onNavigateToDetail: (Article, NavBackStackEntry) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -49,20 +46,19 @@ fun NewsGraph(
         startDestination = Route.HomeScreen.route,
     ) {
 
-        composable(route = Route.HomeScreen.route) { navBackEntry ->
+        composable(route = Route.HomeScreen.route) { from ->
             val viewModel: HomeViewModel = hiltViewModel()
             HomeScreen(
                 paddingValues = paddingValues,
                 articles = viewModel.news.collectAsLazyPagingItems(),
-                navigateToSearch = {
-                    onItemClick(BottomBarScreen.Search)
-                },
+                navigateToSearch = onNavigateBottomBar,
                 navigateToDetail = {
-                    navigateToDetails(navController, it)
-                })
+                    onNavigateToDetail(it, from)
+                }
+            )
         }
 
-        composable(route = BottomBarScreen.Search.route) {
+        composable(route = BottomBarScreen.Search.route) { from ->
             val viewModel: SearchViewModel = hiltViewModel()
             val state by viewModel.state
 
@@ -70,7 +66,7 @@ fun NewsGraph(
                 state = state,
                 event = viewModel::onEvent,
                 navigateToDetail = {
-                    navigateToDetails(navController, it)
+                    onNavigateToDetail(it, from)
                 }
             )
         }
@@ -80,8 +76,6 @@ fun NewsGraph(
             val article = remember {
                 navController.previousBackStackEntry?.savedStateHandle?.get<Article>("article")
             }
-
-//            it.savedStateHandle["aticle"] = article
 
             val factory = remember {
                 derivedStateOf {
@@ -113,21 +107,12 @@ fun NewsGraph(
             }
         }
 
-        composable(route = BottomBarScreen.Bookmark.route) {
+        composable(route = BottomBarScreen.Bookmark.route) {from ->
             val viewModel: BookmarkViewModel = hiltViewModel()
             val state by viewModel.state
-            BookmarkScreen(paddingValues = paddingValues, state = state, navigateToDetails = { article ->
-                navigateToDetails(
-                    navController = navController, article = article
-                )
+            BookmarkScreen(paddingValues = paddingValues, state = state, navigateToDetails = {
+                onNavigateToDetail(it, from)
             })
         }
     }
-}
-
-private fun navigateToDetails(navController: NavHostController, article: Article) {
-    navController.currentBackStackEntry?.savedStateHandle?.set("article", article)
-    navController.navigate(
-        route = Route.DetailsScreen.route
-    )
 }

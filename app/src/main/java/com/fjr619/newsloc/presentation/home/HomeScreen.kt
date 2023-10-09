@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -26,10 +25,10 @@ import androidx.compose.ui.unit.sp
 import androidx.paging.compose.LazyPagingItems
 import com.fjr619.newsloc.R
 import com.fjr619.newsloc.domain.model.Article
-import com.fjr619.newsloc.presentation.navgraph.Route
 import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
 import com.fjr619.newsloc.presentation.common.ArticlesList
 import com.fjr619.newsloc.presentation.common.SearchBar
+import com.fjr619.newsloc.presentation.news_navigator.BottomBarScreen
 import com.fjr619.newsloc.ui.theme.customColorsPalette
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -37,7 +36,7 @@ import com.fjr619.newsloc.ui.theme.customColorsPalette
 fun HomeScreen(
     paddingValues: PaddingValues,
     articles: LazyPagingItems<Article>,
-    navigateToSearch: () -> Unit,
+    navigateToSearch: (BottomBarScreen) -> Unit,
     navigateToDetail: (Article) -> Unit
 ) {
     val titles by remember {
@@ -83,7 +82,7 @@ fun HomeScreen(
                 onValueChange = {},
                 onSearch = {},
                 onClick = {
-                    navigateToSearch()
+                    navigateToSearch(BottomBarScreen.Search)
                 }
             )
 

@@ -1,15 +1,11 @@
 package com.fjr619.newsloc.presentation.news_navigator
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
@@ -23,14 +19,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.fjr619.newsloc.R
+import com.fjr619.newsloc.presentation.navgraph.NewsNavController
 import com.fjr619.newsloc.presentation.navgraph.Route
 
 sealed class BottomBarScreen(
@@ -55,12 +49,13 @@ sealed class BottomBarScreen(
 fun BottomBar(
     navHostController: NavHostController,
     screens: List<BottomBarScreen>,
-    onItemClick: (BottomBarScreen) -> Unit
+    onNavigateBottomBar: (BottomBarScreen) -> Unit
 ) {
 
-    val shouldShowBottomBar = navHostController.currentBackStackEntryAsState().value?.destination?.route in screens.map {
-        it.route
-    }
+    val shouldShowBottomBar =
+        navHostController.currentBackStackEntryAsState().value?.destination?.route in screens.map {
+            it.route
+        }
 
     if (shouldShowBottomBar) {
         NavigationBar {
@@ -68,7 +63,11 @@ fun BottomBar(
             val currentDestination = navBackStackEntry?.destination
 
             screens.forEach { screen ->
-                AddItem(screen = screen, currentDestination = currentDestination, onItemClick = onItemClick)
+                AddItem(
+                    screen = screen,
+                    currentDestination = currentDestination,
+                    onNavigateBottomBar = onNavigateBottomBar
+                )
             }
         }
     }
@@ -78,7 +77,7 @@ fun BottomBar(
 fun RowScope.AddItem(
     screen: BottomBarScreen,
     currentDestination: NavDestination?,
-    onItemClick: (BottomBarScreen) -> Unit
+    onNavigateBottomBar: (BottomBarScreen) -> Unit
 ) {
     NavigationBarItem(
         selected = currentDestination?.hierarchy?.any {
@@ -95,6 +94,6 @@ fun RowScope.AddItem(
                 Text(text = screen.title, style = MaterialTheme.typography.labelSmall)
             }
         },
-        onClick = { onItemClick(screen) }
+        onClick = { onNavigateBottomBar(screen) }
     )
 }

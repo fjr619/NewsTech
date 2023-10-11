@@ -17,20 +17,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.fjr619.newsloc.presentation.navgraph.NewsNavController
 import com.fjr619.newsloc.presentation.navgraph.Route
@@ -82,6 +74,7 @@ fun BottomBar(
             NavigationBar(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(70.dp)
                     .onGloballyPositioned {
                         bottomBarState.setWidth(it.size.width.toFloat())
                     }
@@ -89,7 +82,7 @@ fun BottomBar(
 
                 screens.forEachIndexed { index, screen ->
                     val selected = bottomBarState.isSelected(screen).apply {
-                        if(this) bottomBarState.setCurrentIndex(index)
+                        if (this) bottomBarState.setCurrentIndex(index)
                     }
 
                     AddItem(
@@ -128,9 +121,27 @@ fun RowScope.AddItem(
 ) {
 
     AnimatedBottomNavigationItem(
+        modifier = Modifier.height(70.dp),
         selected = selected,
         onClick = { onNavigateBottomBar(screen) },
         icon = screen.icon,
         label = screen.title
     )
+
+//    NavigationBarItem(
+//        selected = selected,
+//        icon = {
+//            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+//                Icon(
+//                    modifier = Modifier.size(20.dp),
+//                    imageVector = screen.icon,
+//                    contentDescription = null
+//                )
+//                Spacer(modifier = Modifier.height(6.dp))
+//                Text(text = screen.title, style = MaterialTheme.typography.labelSmall)
+//            }
+//        },
+//        onClick = { onNavigateBottomBar(screen)
+//        }
+//    )
 }

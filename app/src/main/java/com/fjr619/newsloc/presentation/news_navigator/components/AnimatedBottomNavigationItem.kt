@@ -1,6 +1,7 @@
 package com.fjr619.newsloc.presentation.news_navigator.components
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
@@ -45,13 +47,12 @@ fun RowScope.AnimatedBottomNavigationItem(
     selectedContentColor: Color = LocalContentColor.current,
 ) {
     val top by animateDpAsState(
-        targetValue = if (selected) 0.dp else 80.dp,
-        animationSpec = SpringSpec(dampingRatio = 0.5f, stiffness = 200f), label = ""
+        targetValue = if (selected) 0.dp else 70.dp,
+        animationSpec = SpringSpec(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessVeryLow), label = ""
     )
 
     Box(
         modifier = modifier
-//            .height(80.dp)
             .padding(start = 10.dp, end = 10.dp)
             .weight(1f)
             .clickable(
@@ -67,15 +68,15 @@ fun RowScope.AnimatedBottomNavigationItem(
             tint = selectedContentColor,
             contentDescription = null,
             modifier = Modifier
-                .height(80.dp)
+                .fillMaxHeight()
                 .width(26.dp)
                 .offset(y = top)
         )
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .height(80.dp)
-                .offset(y = top - 80.dp)
+                .fillMaxHeight()
+                .offset(y = top - 70.dp)
         ) {
             Text(
                 text = label,

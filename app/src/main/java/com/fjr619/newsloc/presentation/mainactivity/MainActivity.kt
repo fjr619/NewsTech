@@ -51,7 +51,6 @@ class MainActivity : ComponentActivity() {
                 })
             }
 
-        enableEdgeToEdge()
         setContent {
             NewsLOCTheme {
                 ChangeSystemBarsTheme(!isSystemInDarkTheme())

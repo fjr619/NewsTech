@@ -32,6 +32,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.fjr619.newsloc.presentation.navgraph.NewsNavController
 import com.fjr619.newsloc.presentation.navgraph.Route
 import com.fjr619.newsloc.presentation.news_navigator.components.AnimatedBottomNavigationItem
 
@@ -55,10 +56,13 @@ sealed class BottomBarScreen(
 
 @Composable
 fun BottomBar(
-    navHostController: NavHostController,
+    newsNavController: NewsNavController,
+    bottomBarState: BottomBarState,
     screens: List<BottomBarScreen>,
     onNavigateBottomBar: (BottomBarScreen) -> Unit
 ) {
+
+    val navHostController = newsNavController.navController
 
     val shouldShowBottomBar =
         navHostController.currentBackStackEntryAsState().value?.destination?.route in screens.map {
@@ -67,19 +71,10 @@ fun BottomBar(
 
     if (shouldShowBottomBar) {
         Box {
-
-            var width by remember {
-                mutableFloatStateOf(0f)
-            }
-
-            var currentIndex by rememberSaveable {
-                mutableIntStateOf(0)
-            }
-
             val offsetAnim by animateFloatAsState(
-                targetValue = when (currentIndex) {
-                    1 -> width / 3
-                    2 -> (width / 3) * 2
+                targetValue = when (bottomBarState.currentIndex) {
+                    1 -> bottomBarState.width.toFloat() / 3
+                    2 -> (bottomBarState.width.toFloat() / 3) * 2
                     else -> 0f
                 }, label = ""
             )
@@ -88,27 +83,20 @@ fun BottomBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .onGloballyPositioned {
-                        width = it.size.width.toFloat()
+                        bottomBarState.setWidth(it.size.width.toFloat())
                     }
             ) {
-                val navBackStackEntry by navHostController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
-
 
                 screens.forEachIndexed { index, screen ->
-                    val selected = currentDestination?.hierarchy?.any {
-                        it.route == screen.route
-                    } == true
-
-                    if (selected) {
-                        currentIndex = index
+                    val selected = bottomBarState.isSelected(screen).apply {
+                        if(this) bottomBarState.setCurrentIndex(index)
                     }
 
                     AddItem(
                         screen = screen,
                         selected = selected,
                         onNavigateBottomBar = {
-                            currentIndex = index
+                            bottomBarState.setCurrentIndex(index)
                             onNavigateBottomBar(it)
                         }
                     )
@@ -117,7 +105,11 @@ fun BottomBar(
 
             Box(
                 modifier = Modifier
-                    .width(with(LocalDensity.current) { width.toDp() / 3 })
+                    .width(with(LocalDensity.current) {
+                        bottomBarState.width
+                            .toFloat()
+                            .toDp() / 3
+                    })
                     .height(3.dp)
                     .offset(with(LocalDensity.current) { offsetAnim.toDp() }, 0.dp)
                     .clip(RoundedCornerShape(5.dp))

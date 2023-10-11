@@ -3,6 +3,7 @@ package com.fjr619.newsloc.presentation.news_navigator
 import android.annotation.SuppressLint
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.fjr619.newsloc.presentation.navgraph.NewsGraph
 import com.fjr619.newsloc.presentation.navgraph.rememberNewsNavController
 
@@ -10,6 +11,10 @@ import com.fjr619.newsloc.presentation.navgraph.rememberNewsNavController
 @Composable
 fun NewsNavigator() {
     val newsNavController = rememberNewsNavController()
+    val bottomBarState = rememberBottomBarState(
+        newsNavController = newsNavController,
+        navBackStackEntry = newsNavController.navController.currentBackStackEntryAsState(),
+    )
 
     val screens = listOf(
         BottomBarScreen.Home,
@@ -20,16 +25,17 @@ fun NewsNavigator() {
     Scaffold(
         bottomBar = {
             BottomBar(
-                navHostController = newsNavController.navController,
+                newsNavController = newsNavController,
+                bottomBarState = bottomBarState,
                 screens = screens,
-                onNavigateBottomBar = newsNavController::navigateToBottomBarRoute
+                onNavigateBottomBar = bottomBarState::navigateToBottomBarRoute
             )
         }
     ) {
         NewsGraph(
             paddingValues = it,
             navController = newsNavController.navController,
-            onNavigateBottomBar = newsNavController::navigateToBottomBarRoute,
+            onNavigateBottomBar = bottomBarState::navigateToBottomBarRoute,
             onNavigateToDetail = newsNavController::navigateToDetail
         )
     }

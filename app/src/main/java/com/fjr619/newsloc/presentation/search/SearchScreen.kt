@@ -14,7 +14,13 @@ import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
 import com.fjr619.newsloc.presentation.common.ArticlesList
 import com.fjr619.newsloc.presentation.common.SearchBar
+import com.fjr619.newsloc.presentation.navgraph.SearchNavGraph
+import com.ramcosta.composedestinations.annotation.Destination
 
+@SearchNavGraph(
+    start = true
+)
+@Destination
 @Composable
 fun SearchScreen(
     state: SearchState,

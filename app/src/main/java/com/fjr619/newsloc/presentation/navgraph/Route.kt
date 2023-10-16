@@ -2,6 +2,8 @@ package com.fjr619.newsloc.presentation.navgraph
 
 import androidx.navigation.NamedNavArgument
 
+const val OnBoardingScreen = "onBoardingScreen"
+
 sealed class Route(
     val route: String,
     val arguments: List<NamedNavArgument> = emptyList()

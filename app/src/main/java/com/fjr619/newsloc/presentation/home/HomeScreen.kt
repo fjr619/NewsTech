@@ -28,10 +28,16 @@ import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
 import com.fjr619.newsloc.presentation.common.ArticlesList
 import com.fjr619.newsloc.presentation.common.SearchBar
+import com.fjr619.newsloc.presentation.navgraph.HomeNavGraph
 import com.fjr619.newsloc.presentation.news_navigator.BottomBarScreen
 import com.fjr619.newsloc.ui.theme.customColorsPalette
+import com.ramcosta.composedestinations.annotation.Destination
 
 @OptIn(ExperimentalFoundationApi::class)
+@HomeNavGraph(
+    start = true
+)
+@Destination
 @Composable
 fun HomeScreen(
     paddingValues: PaddingValues,
@@ -82,7 +88,7 @@ fun HomeScreen(
                 onValueChange = {},
                 onSearch = {},
                 onClick = {
-                    navigateToSearch(BottomBarScreen.Search)
+//                    navigateToSearch(BottomBarScreen.Search)
                 }
             )
 

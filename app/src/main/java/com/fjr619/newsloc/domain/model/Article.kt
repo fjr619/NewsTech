@@ -4,12 +4,11 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
-import javax.annotation.Nullable
 
 @Parcelize
 @Entity(tableName = "Article")
 data class Article(
-    val author: String,
+    val author: String? = null,
     val content: String,
     val description: String? = null,
     val publishedAt: String,

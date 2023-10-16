@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -27,14 +25,21 @@ import com.fjr619.newsloc.presentation.common.NewsTextButton
 import com.fjr619.newsloc.presentation.onboarding.components.OnboardingEvent
 import com.fjr619.newsloc.presentation.onboarding.components.OnboardingPage
 import com.fjr619.newsloc.presentation.onboarding.components.PagerIndicator
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import kotlinx.coroutines.launch
 
+
 @OptIn(ExperimentalFoundationApi::class)
+@RootNavGraph(start = true)
+@Destination
 @Composable
 fun OnboardingScreen(
     onEvent: (OnboardingEvent) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize().navigationBarsPadding()) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .navigationBarsPadding()) {
         val pagerState = rememberPagerState(
             initialPage = 0
         ) {

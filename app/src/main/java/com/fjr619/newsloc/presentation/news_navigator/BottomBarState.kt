@@ -12,13 +12,12 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.fjr619.newsloc.presentation.navgraph.NewsNavController
-import com.fjr619.newsloc.presentation.navgraph.rememberNewsNavController
 
 @Composable
 fun rememberBottomBarState(
     width: Float = 0f,
     currentIndex: Int = 0,
-    newsNavController: NewsNavController = rememberNewsNavController(),
+    newsNavController: NewsNavController ,
     navBackStackEntry: State<NavBackStackEntry?>
 ): BottomBarState {
     return rememberSaveable(saver = BottomBarState.saver(navBackStackEntry, newsNavController)) {
@@ -49,7 +48,7 @@ class BottomBarState(
 
     fun isSelected(screen: BottomBarScreen): Boolean {
         return navBackStackEntry.value?.destination?.hierarchy?.any {
-            it.route == screen.route
+            it.route == screen.route.route
         } == true
     }
 

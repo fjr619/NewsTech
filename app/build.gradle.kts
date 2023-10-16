@@ -108,4 +108,8 @@ dependencies {
     implementation ("androidx.room:room-ktx:2.5.2")
 
     implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+
+    //compose destinations
+    implementation ("io.github.raamcosta.compose-destinations:core:1.9.54")
+    ksp  ("io.github.raamcosta.compose-destinations:ksp:1.9.54")
 }

@@ -9,7 +9,6 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.presentation.news_navigator.BottomBarScreen
 
@@ -18,7 +17,7 @@ import com.fjr619.newsloc.presentation.news_navigator.BottomBarScreen
  */
 @Composable
 fun rememberNewsNavController(
-    navHostController: NavHostController = rememberNavController()
+    navHostController: NavHostController
 ): NewsNavController = remember(navHostController) {
     NewsNavController(navHostController)
 }
@@ -27,7 +26,7 @@ fun rememberNewsNavController(
 class NewsNavController(
     val navController: NavHostController
 ) {
-    val currentRoute: String?
+    private val currentRoute: String?
         get() = navController.currentDestination?.route
 
     /**
@@ -49,8 +48,8 @@ class NewsNavController(
     }
 
     fun navigateToBottomBarRoute(bottomBarScreen: BottomBarScreen) {
-        if (bottomBarScreen.route != currentRoute) {
-            navController.navigate(bottomBarScreen.route) {
+        if (bottomBarScreen.route.route  !=  currentRoute) {
+            navController.navigate(bottomBarScreen.route.route) {
                 popUpTo(findStartDestination(navController.graph).id) {
                     saveState = true
                 }

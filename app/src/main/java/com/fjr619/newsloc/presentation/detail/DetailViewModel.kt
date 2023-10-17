@@ -4,13 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.domain.usecase.news.NewsUseCases
-import com.fjr619.newsloc.util.UiEffect
 import com.fjr619.newsloc.util.UiText
+import com.fjr619.newsloc.util.composestateevents.consumed
+import com.fjr619.newsloc.util.composestateevents.triggered
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,14 +20,17 @@ class DetailViewModel @Inject constructor(
 //    @Assisted private val article: Article?
 ) : ViewModel() {
 
-    private var _sideEffect: MutableSharedFlow<UiEffect> = MutableSharedFlow()
-    val sideEffect = _sideEffect.asSharedFlow()
+//    private var _sideEffect: MutableSharedFlow<UiEffect> = MutableSharedFlow()
+//    val sideEffect = _sideEffect.asSharedFlow()
+//
+//    private var _bookmarkArticle = MutableStateFlow<Article?>(null)
+//    val bookMarkArticle = _bookmarkArticle.asStateFlow()
+//
+//    private var _article = MutableStateFlow<Article?>(null)
+//    val article = _article.asStateFlow()
 
-    private var _bookmarkArticle = MutableStateFlow<Article?>(null)
-    val bookMarkArticle = _bookmarkArticle.asStateFlow()
-
-    private var _article = MutableStateFlow<Article?>(null)
-    val article = _article.asStateFlow()
+    private var _viewState = MutableStateFlow<DetailViewState>(DetailViewState())
+    val viewState = _viewState.asStateFlow()
 
 //    @AssistedFactory
 //    interface Factory {
@@ -53,8 +56,12 @@ class DetailViewModel @Inject constructor(
 //    }
 
     private suspend fun getBookmarkArticle(article: Article?) {
-        _bookmarkArticle.value = article?.let {
-            newsUseCases.getArticle(url = it.url)
+        _viewState.update {
+            it.copy(
+                bookmark = article?.let {
+                    newsUseCases.getArticle(url = it.url)
+                }
+            )
         }
     }
 
@@ -63,7 +70,11 @@ class DetailViewModel @Inject constructor(
         when (event) {
             is DetailEvent.GetDetailArticle -> {
                 viewModelScope.launch {
-                    this@DetailViewModel._article.value = event.article
+                    _viewState.update {
+                        it.copy(
+                            article = event.article
+                        )
+                    }
                     getBookmarkArticle(event.article)
                 }
             }
@@ -71,28 +82,41 @@ class DetailViewModel @Inject constructor(
             is DetailEvent.UpsertDeleteArticle -> {
                 viewModelScope.launch {
                     getBookmarkArticle(event.article)
-                    if (_bookmarkArticle.value == null) {
+                    if (viewState.value.bookmark == null) {
                         upsertArticle(article = event.article)
                     } else {
                         deleteArticle(article = event.article)
                     }
                 }
             }
-//            is DetailEvent.RemoveSideEffect ->{
-//                sideEffect = null
-//            }
+        }
+    }
+
+    fun onConsumedSucceededEvent() {
+        _viewState.update {
+            it.copy(
+                processSucceededEvent = consumed()
+            )
         }
     }
 
     private suspend fun deleteArticle(article: Article) {
         newsUseCases.deleteArticle(article = article)
-        _bookmarkArticle.value = null
-        _sideEffect.emit(UiEffect.Toast(UiText.DynamicString("Article deleted")))
+        _viewState.update {
+            it.copy(
+                bookmark = null,
+                processSucceededEvent = triggered(UiText.DynamicString("Article deleted"))
+            )
+        }
     }
 
     private suspend fun upsertArticle(article: Article) {
         newsUseCases.upsertArticle(article = article)
-        _bookmarkArticle.value = article
-        _sideEffect.emit(UiEffect.Toast(UiText.DynamicString("Article Inserted")))
+        _viewState.update {
+            it.copy(
+                bookmark = article,
+                processSucceededEvent = triggered(UiText.DynamicString("Article inserted"))
+            )
+        }
     }
 }

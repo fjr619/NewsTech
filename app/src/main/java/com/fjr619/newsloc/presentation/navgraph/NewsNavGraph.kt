@@ -1,6 +1,5 @@
 package com.fjr619.newsloc.presentation.navgraph
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
@@ -8,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -28,7 +26,7 @@ import com.fjr619.newsloc.presentation.home.HomeViewModel
 import com.fjr619.newsloc.presentation.news_navigator.BottomBarScreen
 import com.fjr619.newsloc.presentation.search.SearchScreen
 import com.fjr619.newsloc.presentation.search.SearchViewModel
-import de.palm.composestateevents.EventEffect
+import com.fjr619.newsloc.util.UiEffect
 
 @Composable
 fun NewsGraph(
@@ -89,7 +87,7 @@ fun NewsGraph(
             composable(route = Route.DetailsScreen.route) { from ->
                 val viewModel: DetailViewModel = from.hiltSharedViewModel(navController = navController)
 
-                val context = LocalContext.current
+//                val context = LocalContext.current
 //                val article = remember {
 //                    navController.previousBackStackEntry?.savedStateHandle?.get<Article>("article")
 //                }
@@ -106,22 +104,19 @@ fun NewsGraph(
 //                val viewModel: DetailViewModel = viewModel(
 //                    factory = DetailViewModel.provideFactory(factory.value, article)
 //                )
-
-                val detailViewState by viewModel.detailViewState.collectAsStateWithLifecycle()
-
-                EventEffect(event = detailViewState.processSucessEvent,
-                    onConsumed = viewModel::onComsumedSuccessEvent, action = { message ->
-                        Toast.makeText(context, message.asString(context), Toast.LENGTH_SHORT).show()
-                    })
-
-                detailViewState.article.run {
+//
+                val sideEffect by viewModel.sideEffect.collectAsStateWithLifecycle(
+                    initialValue = UiEffect.None()
+                )
+//
+                viewModel.article.collectAsStateWithLifecycle().value?.let {
                     Surface(modifier = Modifier.fillMaxSize()) {
                         DetailScreen(
-                            article = this,
-                            bookmarkArticle = detailViewState.bookmarkArticle,
+                            article = it,
+                            bookmarkArticle = viewModel.bookMarkArticle.collectAsStateWithLifecycle().value,
                             event = viewModel::onEvent,
                             navigateUp = { navController.popBackStack() },
-//                            sideEffect = sideEffect
+                            sideEffect = sideEffect
                         )
                     }
                 }

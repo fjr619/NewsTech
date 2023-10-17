@@ -10,7 +10,6 @@ import androidx.navigation.NavGraph
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.presentation.news_navigator.BottomBarScreen
 
 /**
@@ -61,9 +60,9 @@ class NewsNavController(
         }
     }
 
-    fun navigateToDetail(article: Article, from: NavBackStackEntry) {
+    fun navigateToDetail(from: NavBackStackEntry) {
         if (from.lifecycleIsResumed()) {
-            navController.currentBackStackEntry?.savedStateHandle?.set("article", article)
+//            navController.currentBackStackEntry?.savedStateHandle?.set("article", article)
             navController.navigate(
                 route = Route.DetailsScreen.route
             )

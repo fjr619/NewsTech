@@ -1,57 +1,59 @@
 package com.fjr619.newsloc.presentation.detail
 
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.domain.usecase.news.NewsUseCases
 import com.fjr619.newsloc.util.UiEffect
 import com.fjr619.newsloc.util.UiText
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DetailViewModel @AssistedInject constructor(
+@HiltViewModel
+class DetailViewModel @Inject constructor(
     private val newsUseCases: NewsUseCases,
-    @Assisted private val article: Article?
+//    @Assisted private val article: Article?
 ) : ViewModel() {
 
     private var _sideEffect: MutableSharedFlow<UiEffect> = MutableSharedFlow()
     val sideEffect = _sideEffect.asSharedFlow()
 
-    var bookmarkArticle = mutableStateOf<Article?>(null)
-        private set
+    private var _bookmarkArticle = MutableStateFlow<Article?>(null)
+    val bookMarkArticle = _bookmarkArticle.asStateFlow()
 
-    @AssistedFactory
-    interface Factory {
-        fun create(article: Article?): DetailViewModel
-    }
+    private var _article = MutableStateFlow<Article?>(null)
+    val article = _article.asStateFlow()
 
-    @Suppress("UNCHECKED_CAST")
-    companion object {
-        fun provideFactory(
-            assistedFactory: Factory,
-            article: Article?
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return assistedFactory.create(article) as T
-            }
-        }
-    }
+//    @AssistedFactory
+//    interface Factory {
+//        fun create(article: Article?): DetailViewModel
+//    }
+
+//    @Suppress("UNCHECKED_CAST")
+//    companion object {
+//        fun provideFactory(
+//            assistedFactory: Factory,
+//            article: Article?
+//        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//                return assistedFactory.create(article) as T
+//            }
+//        }
+//    }
 
 
-    init {
-        Log.e("TAG", "init detail viewmodel $article")
-        onEvent(DetailEvent.GetBookmarkArticle(article))
-    }
+//    init {
+//        Log.e("TAG", "init detail viewmodel $article")
+//        onEvent(DetailEvent.GetBookmarkArticle(article))
+//    }
 
     private suspend fun getBookmarkArticle(article: Article?) {
-        bookmarkArticle.value = article?.let {
+        _bookmarkArticle.value = article?.let {
             newsUseCases.getArticle(url = it.url)
         }
     }
@@ -59,8 +61,9 @@ class DetailViewModel @AssistedInject constructor(
 
     fun onEvent(event: DetailEvent) {
         when (event) {
-            is DetailEvent.GetBookmarkArticle -> {
+            is DetailEvent.GetDetailArticle -> {
                 viewModelScope.launch {
+                    this@DetailViewModel._article.value = event.article
                     getBookmarkArticle(event.article)
                 }
             }
@@ -68,7 +71,7 @@ class DetailViewModel @AssistedInject constructor(
             is DetailEvent.UpsertDeleteArticle -> {
                 viewModelScope.launch {
                     getBookmarkArticle(event.article)
-                    if (bookmarkArticle.value == null) {
+                    if (_bookmarkArticle.value == null) {
                         upsertArticle(article = event.article)
                     } else {
                         deleteArticle(article = event.article)
@@ -83,13 +86,13 @@ class DetailViewModel @AssistedInject constructor(
 
     private suspend fun deleteArticle(article: Article) {
         newsUseCases.deleteArticle(article = article)
-        bookmarkArticle.value = null
+        _bookmarkArticle.value = null
         _sideEffect.emit(UiEffect.Toast(UiText.DynamicString("Article deleted")))
     }
 
     private suspend fun upsertArticle(article: Article) {
         newsUseCases.upsertArticle(article = article)
-        bookmarkArticle.value = article
+        _bookmarkArticle.value = article
         _sideEffect.emit(UiEffect.Toast(UiText.DynamicString("Article Inserted")))
     }
 }

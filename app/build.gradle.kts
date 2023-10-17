@@ -108,4 +108,7 @@ dependencies {
     implementation ("androidx.room:room-ktx:2.5.2")
 
     implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+
+    //1 time event compose
+    implementation ("com.github.leonard-palm:compose-state-events:2.1.0")
 }

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -33,7 +31,6 @@ import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
 import com.fjr619.newsloc.presentation.detail.components.DetailTopBar
 import com.fjr619.newsloc.ui.theme.NewsLOCTheme
 import com.fjr619.newsloc.ui.theme.customColorsPalette
-import com.fjr619.newsloc.util.UiEffect
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -41,22 +38,21 @@ fun DetailScreen(
     article: Article,
     bookmarkArticle: Article?,
     event: (DetailEvent) -> Unit,
-    sideEffect: UiEffect?,
     navigateUp: () -> Unit
 ) {
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = sideEffect) {
-
-        sideEffect.apply {
-            when(this){
-                is UiEffect.Toast ->{
-                    Toast.makeText(context, message.asString(context), Toast.LENGTH_SHORT).show()
-                }
-                else -> Unit
-            }
-        }
-    }
+//    LaunchedEffect(key1 = sideEffect) {
+//
+//        sideEffect.apply {
+//            when(this){
+//                is UiEffect.Toast ->{
+//                    Toast.makeText(context, message.asString(context), Toast.LENGTH_SHORT).show()
+//                }
+//                else -> Unit
+//            }
+//        }
+//    }
 
     Scaffold(
         modifier = Modifier
@@ -149,7 +145,7 @@ fun DetailsScreenPreview() {
                 urlToImage = "https://media.wired.com/photos/6495d5e893ba5cd8bbdc95af/191:100/w_1280,c_limit/The-EU-Rules-Phone-Batteries-Must-Be-Replaceable-Gear-2BE6PRN.jpg"
             ),
             event = {},
-            sideEffect = null,
+//            sideEffect = null,
             bookmarkArticle = null
         ) {
 

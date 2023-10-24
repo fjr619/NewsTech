@@ -9,7 +9,9 @@ import com.fjr619.newsloc.presentation.navgraph.rememberNewsNavController
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun NewsNavigator() {
+fun NewsNavigator(
+    countBookmark: Int,
+) {
     val newsNavController = rememberNewsNavController()
     val bottomBarState = rememberBottomBarState(
         newsNavController = newsNavController,
@@ -28,6 +30,7 @@ fun NewsNavigator() {
                 newsNavController = newsNavController,
                 bottomBarState = bottomBarState,
                 screens = screens,
+                countBookmark = countBookmark,
                 onNavigateBottomBar = bottomBarState::navigateToBottomBarRoute
             )
         }

@@ -31,18 +31,20 @@ import com.fjr619.newsloc.presentation.news_navigator.components.AnimatedBottomN
 sealed class BottomBarScreen(
     val route: String,
     val title: String,
-    val icon: ImageVector
+    val icon: ImageVector,
+    val hasBadge: Boolean,
+    val count: Int = 0
 ) {
     data object Home : BottomBarScreen(
-        Route.HomeScreen.route, "Home", Icons.Outlined.Home
+        Route.HomeScreen.route, "Home", Icons.Outlined.Home, hasBadge = false
     )
 
     data object Search : BottomBarScreen(
-        Route.SearchScreen.route, "Search", Icons.Outlined.Search
+        Route.SearchScreen.route, "Search", Icons.Outlined.Search, hasBadge = false
     )
 
     data object Bookmark : BottomBarScreen(
-        Route.BookmarkScreen.route, "Bookmark", Icons.Outlined.FavoriteBorder
+        Route.BookmarkScreen.route, "Bookmark", Icons.Outlined.FavoriteBorder, hasBadge = true
     )
 }
 
@@ -51,7 +53,8 @@ fun BottomBar(
     newsNavController: NewsNavController,
     bottomBarState: BottomBarState,
     screens: List<BottomBarScreen>,
-    onNavigateBottomBar: (BottomBarScreen) -> Unit
+    onNavigateBottomBar: (BottomBarScreen) -> Unit,
+    countBookmark: Int
 ) {
 
     val navHostController = newsNavController.navController
@@ -74,7 +77,7 @@ fun BottomBar(
             NavigationBar(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(70.dp)
+                    .height(80.dp)
                     .onGloballyPositioned {
                         bottomBarState.setWidth(it.size.width.toFloat())
                     }
@@ -88,6 +91,7 @@ fun BottomBar(
                     AddItem(
                         screen = screen,
                         selected = selected,
+                        count = countBookmark,
                         onNavigateBottomBar = {
                             bottomBarState.setCurrentIndex(index)
                             onNavigateBottomBar(it)
@@ -117,15 +121,18 @@ fun BottomBar(
 fun RowScope.AddItem(
     screen: BottomBarScreen,
     selected: Boolean,
-    onNavigateBottomBar: (BottomBarScreen) -> Unit
+    onNavigateBottomBar: (BottomBarScreen) -> Unit,
+    count: Int
 ) {
 
     AnimatedBottomNavigationItem(
-        modifier = Modifier.height(70.dp),
+        modifier = Modifier.height(80.dp),
         selected = selected,
         onClick = { onNavigateBottomBar(screen) },
         icon = screen.icon,
-        label = screen.title
+        label = screen.title,
+        hasBadge = screen.hasBadge,
+        count = count
     )
 
 //    NavigationBarItem(

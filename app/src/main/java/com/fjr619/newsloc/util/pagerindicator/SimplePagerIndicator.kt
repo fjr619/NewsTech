@@ -1,4 +1,4 @@
-package com.fjr619.newsloc.presentation.onboarding.components
+package com.fjr619.newsloc.util.pagerindicator
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,21 +11,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import com.fjr619.newsloc.presentation.Dimens
+import androidx.compose.ui.unit.dp
 
 @Composable
-fun PagerIndicator(
+fun SimplePagerIndicator(
     modifier: Modifier = Modifier,
-    pagesSize: Int,
+    itemCount: Int,
     selectedPage: Int,
     selectedColor: Color = MaterialTheme.colorScheme.primary,
     unselectedColor: Color = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
 ) {
     Row(modifier = modifier, horizontalArrangement = Arrangement.SpaceBetween) {
-        repeat(times = pagesSize) { page ->
+        repeat(times = itemCount) { page ->
             Box(
                 modifier = Modifier
-                    .size(Dimens.IndicatorSize)
+                    .size(10.dp)
                     .clip(CircleShape)
                     .background(color = if (page == selectedPage) selectedColor else unselectedColor)
             )

@@ -11,37 +11,29 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.fjr619.newsloc.presentation.navgraph.NewsNavController
 import com.fjr619.newsloc.presentation.navgraph.rememberNewsNavController
 
 @Composable
 fun rememberBottomBarState(
-    width: Float = 0f,
     currentIndex: Int = 0,
     newsNavController: NewsNavController = rememberNewsNavController(),
     navBackStackEntry: State<NavBackStackEntry?>
 ): BottomBarState {
     return rememberSaveable(saver = BottomBarState.saver(navBackStackEntry, newsNavController)) {
-        BottomBarState(width, currentIndex, newsNavController, navBackStackEntry)
+        BottomBarState(currentIndex, newsNavController, navBackStackEntry)
     }
 }
 
 @Stable
 class BottomBarState(
-    width: Number,
     currentIndex: Number,
     val newsNavController: NewsNavController,
     val navBackStackEntry: State<NavBackStackEntry?>,
 ) {
-    var width by mutableStateOf(width)
-        private set
-
     var currentIndex by mutableStateOf(currentIndex)
         private set
-
-    fun setWidth(width: Float) {
-        this.width = width
-    }
 
     fun setCurrentIndex(curIndex: Int) {
         this.currentIndex = curIndex
@@ -57,6 +49,12 @@ class BottomBarState(
         newsNavController.navigateToBottomBarRoute(bottomBarScreen)
     }
 
+    @Composable
+    fun showNavigation(list: () -> List<BottomBarScreen>): Boolean {
+        return newsNavController.navController.currentBackStackEntryAsState().value?.destination?.route in list().map {
+            it.route
+        }
+    }
 
     companion object {
         fun saver(
@@ -64,12 +62,12 @@ class BottomBarState(
             newsNavController: NewsNavController
         ): Saver<BottomBarState, *> = listSaver(
             save = {
-                listOf(it.width, it.currentIndex)
+                listOf(/*it.width,*/ it.currentIndex)
             },
             restore = {
                 BottomBarState(
-                    width = it[0],
-                    currentIndex = it[1],
+                    /*width = it[0],*/
+                    currentIndex = it[0],
                     navBackStackEntry = navBackStackEntry,
                     newsNavController = newsNavController
                 )

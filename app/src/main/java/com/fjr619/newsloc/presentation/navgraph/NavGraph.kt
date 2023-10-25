@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.fjr619.newsloc.presentation.mainactivity.NavigationType
 import com.fjr619.newsloc.presentation.news_navigator.NewsNavigator
 import com.fjr619.newsloc.presentation.news_navigator.NewsNavigatorViewModel
 import com.fjr619.newsloc.presentation.onboarding.OnboardingScreen
@@ -15,32 +16,36 @@ import com.fjr619.newsloc.presentation.onboarding.OnboardingViewModel
 
 @Composable
 fun NavGraph(
-    navController: NavHostController,
-    startDestination: String
+  navController: NavHostController,
+  navigationType: NavigationType,
+  startDestination: String
 ) {
-    Log.e("TAG", "startDestination $startDestination")
-    NavHost(
-        navController = navController,
-        route = Route.RootNavigation.route,
-        startDestination = startDestination
+  Log.e("TAG", "startDestination $startDestination")
+  NavHost(
+    navController = navController,
+    route = Route.RootNavigation.route,
+    startDestination = startDestination
+  ) {
+    navigation(
+      route = Route.AppStartNavigation.route,
+      startDestination = Route.OnBoardingScreen.route
     ) {
-        navigation(
-            route = Route.AppStartNavigation.route,
-            startDestination = Route.OnBoardingScreen.route
-        ) {
-            composable(route = Route.OnBoardingScreen.route) {
-                val viewModel: OnboardingViewModel = hiltViewModel()
-                OnboardingScreen(viewModel::onEvent)
-            }
-        }
+      composable(route = Route.OnBoardingScreen.route) {
+        val viewModel: OnboardingViewModel = hiltViewModel()
+        OnboardingScreen(viewModel::onEvent)
+      }
+    }
 
-        composable(
-            route = Route.NewsNavigation.route
-        ) {
-            val viewModel: NewsNavigatorViewModel = hiltViewModel()
-            val countBookmark by viewModel.state
-            NewsNavigator(countBookmark = countBookmark.articles.size)
-        }
+    composable(
+      route = Route.NewsNavigation.route
+    ) {
+      val viewModel: NewsNavigatorViewModel = hiltViewModel()
+      val countBookmark by viewModel.state
+      NewsNavigator(
+        navigationType = navigationType,
+        countBookmark = countBookmark.articles.size
+      )
+    }
 
 //        navigation(
 //            route = Route.NewsNavigation.route,
@@ -122,6 +127,6 @@ fun NavGraph(
 //                }
 //            }
 //        }
-    }
+  }
 }
 

@@ -3,11 +3,12 @@ News app with compose + paging 3
 
 ## Screenshoot
 ### Phone
-![Phone](gallery/image-phone.jpg)
+<img src="/gallery/image-phone.jpg" width="30%">
 
 ### Tablet
 #### Portrait
-![Tab Portrait](gallery/image-tablet-portrait.jpg)
+<img src="/gallery/image-tablet-portrait.jpg" width="30%">
+
 
 #### Landspace
-![Tab Landscape](gallery/image-tablet-landscape.jpg)
+<img src="/gallery/image-tablet-landscape.jpg" width="30%">

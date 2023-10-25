@@ -10,7 +10,7 @@ import androidx.navigation.NavGraph
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.fjr619.newsloc.presentation.news_navigator.BottomBarScreen
+import com.fjr619.newsloc.presentation.news_navigator.MaterialNavScreen
 
 /**
  *  https://github.com/android/compose-samples/blob/main/Jetsnack/app/src/main/java/com/example/jetsnack/ui/navigation/JetsnackNavController.kt
@@ -47,9 +47,9 @@ class NewsNavController(
         return if (graph is NavGraph) findStartDestination(graph.findStartDestination()) else graph
     }
 
-    fun navigateToBottomBarRoute(bottomBarScreen: BottomBarScreen) {
-        if (bottomBarScreen.route != currentRoute) {
-            navController.navigate(bottomBarScreen.route) {
+    fun navigateToBottomBarRoute(materialNavScreen: MaterialNavScreen) {
+        if (materialNavScreen.route != currentRoute) {
+            navController.navigate(materialNavScreen.route) {
                 popUpTo(findStartDestination(navController.graph).id) {
                     saveState = true
                 }

@@ -1,14 +1,10 @@
-package com.fjr619.newsloc.presentation.news_navigator
+package com.fjr619.newsloc.presentation.news_navigator.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,41 +16,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.fjr619.newsloc.presentation.navgraph.Route
+import com.fjr619.newsloc.presentation.news_navigator.MaterialNavScreen
+import com.fjr619.newsloc.presentation.news_navigator.MaterialNavigationState
 
-sealed class BottomBarScreen(
-  val route: String,
-  val title: String,
-  val icon: ImageVector,
-  val hasBadge: Boolean,
-  val count: Int = 0
-) {
-  data object Home : BottomBarScreen(
-    Route.HomeScreen.route, "Home", Icons.Outlined.Home, hasBadge = false
-  )
-
-  data object Search : BottomBarScreen(
-    Route.SearchScreen.route, "Search", Icons.Outlined.Search, hasBadge = false
-  )
-
-  data object Bookmark : BottomBarScreen(
-    Route.BookmarkScreen.route, "Bookmark", Icons.Outlined.FavoriteBorder, hasBadge = true
-  )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomBar(
 //  newsNavController: NewsNavController,
-  bottomBarState: BottomBarState,
-  screens: List<BottomBarScreen>,
-  onNavigateBottomBar: (BottomBarScreen) -> Unit,
+  materialNavigationState: MaterialNavigationState,
+  screens: List<MaterialNavScreen>,
+  onNavigateBottomBar: (MaterialNavScreen) -> Unit,
   countBookmark: Int
 ) {
 
-  if (bottomBarState.showNavigation {
+  if (materialNavigationState.showNavigation {
       screens
     }) {
     NavigationBar(
@@ -63,8 +40,8 @@ fun BottomBar(
     ) {
 
       screens.forEachIndexed { index, screen ->
-        val selected = bottomBarState.isSelected(screen).apply {
-          if (this) bottomBarState.setCurrentIndex(index)
+        val selected = materialNavigationState.isSelected(screen).apply {
+          if (this) materialNavigationState.setCurrentIndex(index)
         }
 
         NavigationBarItem(

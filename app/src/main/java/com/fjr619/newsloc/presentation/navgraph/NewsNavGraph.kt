@@ -25,7 +25,7 @@ import com.fjr619.newsloc.presentation.detail.DetailScreen
 import com.fjr619.newsloc.presentation.detail.DetailViewModel
 import com.fjr619.newsloc.presentation.home.HomeScreen
 import com.fjr619.newsloc.presentation.home.HomeViewModel
-import com.fjr619.newsloc.presentation.news_navigator.BottomBarScreen
+import com.fjr619.newsloc.presentation.news_navigator.MaterialNavScreen
 import com.fjr619.newsloc.presentation.search.SearchScreen
 import com.fjr619.newsloc.presentation.search.SearchViewModel
 import com.fjr619.newsloc.util.composestateevents.EventEffect
@@ -34,7 +34,7 @@ import com.fjr619.newsloc.util.composestateevents.EventEffect
 fun NewsGraph(
     paddingValues: PaddingValues,
     navController: NavHostController,
-    onNavigateBottomBar: (BottomBarScreen) -> Unit,
+    onNavigateBottomBar: (MaterialNavScreen) -> Unit,
     onNavigateToDetail: (NavBackStackEntry) -> Unit
 ) {
     NavHost(
@@ -61,7 +61,7 @@ fun NewsGraph(
                 )
             }
 
-            composable(route = BottomBarScreen.Search.route) { from ->
+            composable(route = MaterialNavScreen.Search.route) { from ->
                 val viewModel: SearchViewModel = hiltViewModel()
                 val detailViewModel: DetailViewModel = from.hiltSharedViewModel(navController = navController)
                 val state by viewModel.state
@@ -76,7 +76,7 @@ fun NewsGraph(
                 )
             }
 
-            composable(route = BottomBarScreen.Bookmark.route) { from ->
+            composable(route = MaterialNavScreen.Bookmark.route) { from ->
                 val viewModel: BookmarkViewModel = hiltViewModel()
                 val detailViewModel: DetailViewModel = from.hiltSharedViewModel(navController = navController)
                 val state by viewModel.state

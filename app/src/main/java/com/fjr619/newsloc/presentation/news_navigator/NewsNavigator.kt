@@ -6,9 +6,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.fjr619.newsloc.presentation.common.NewsSnackbar
+import com.fjr619.newsloc.util.snackbar.ProvideSnackbarController
 import com.fjr619.newsloc.presentation.mainactivity.NavigationType
 import com.fjr619.newsloc.presentation.navgraph.NewsGraph
 import com.fjr619.newsloc.presentation.navgraph.rememberNewsNavController
@@ -34,49 +40,63 @@ fun NewsNavigator(
     MaterialNavScreen.Bookmark
   )
 
-  Scaffold(
-    bottomBar = {
-      AnimatedVisibility(visible = navigationType == NavigationType.BOTTOM_NAV) {
-        BottomBar(
-          materialNavigationState = materialNavigationState,
-          screens = screens,
-          countBookmark = countBookmark,
-          onNavigateBottomBar = materialNavigationState::navigateToBottomBarRoute
-        )
-      }
-    }
-  ) {
+  val snackbarHostState = remember { SnackbarHostState() }
+  val coroutineScope = rememberCoroutineScope()
 
-    Row(
-      modifier = Modifier.fillMaxSize()
+  ProvideSnackbarController(
+    snackbarHostState = snackbarHostState,
+    coroutineScope = coroutineScope
+  ) {
+    Scaffold(
+      snackbarHost = {
+        SnackbarHost(hostState = snackbarHostState)
+        { data ->
+          NewsSnackbar(data = data)
+        }
+      },
+      bottomBar = {
+        AnimatedVisibility(visible = navigationType == NavigationType.BOTTOM_NAV) {
+          BottomBar(
+            materialNavigationState = materialNavigationState,
+            screens = screens,
+            countBookmark = countBookmark,
+            onNavigateBottomBar = materialNavigationState::navigateToBottomBarRoute
+          )
+        }
+      }
     ) {
 
-      AnimatedVisibility(visible = navigationType == NavigationType.NAV_RAIL && materialNavigationState.showNavigation { screens }) {
-        NavRail(
-          materialNavigationState = materialNavigationState,
-          screens = screens,
-          onNavigateBottomBar = materialNavigationState::navigateToBottomBarRoute,
-          countBookmark = countBookmark
-        )
-      }
+      Row(
+        modifier = Modifier.fillMaxSize()
+      ) {
 
-      PermanentNavigationDrawer(drawerContent = {
-        AnimatedVisibility(visible = navigationType == NavigationType.PERMANENT_NAV_DRAWER && materialNavigationState.showNavigation { screens }) {
-          PermanentNavDrawer(
+        AnimatedVisibility(visible = navigationType == NavigationType.NAV_RAIL && materialNavigationState.showNavigation { screens }) {
+          NavRail(
             materialNavigationState = materialNavigationState,
             screens = screens,
             onNavigateBottomBar = materialNavigationState::navigateToBottomBarRoute,
             countBookmark = countBookmark
           )
         }
-      }
-      ) {
-        NewsGraph(
-          paddingValues = it,
-          navController = newsNavController.navController,
-          onNavigateBottomBar = materialNavigationState::navigateToBottomBarRoute,
-          onNavigateToDetail = newsNavController::navigateToDetail
-        )
+
+        PermanentNavigationDrawer(drawerContent = {
+          AnimatedVisibility(visible = navigationType == NavigationType.PERMANENT_NAV_DRAWER && materialNavigationState.showNavigation { screens }) {
+            PermanentNavDrawer(
+              materialNavigationState = materialNavigationState,
+              screens = screens,
+              onNavigateBottomBar = materialNavigationState::navigateToBottomBarRoute,
+              countBookmark = countBookmark
+            )
+          }
+        }
+        ) {
+          NewsGraph(
+            paddingValues = it,
+            navController = newsNavController.navController,
+            onNavigateBottomBar = materialNavigationState::navigateToBottomBarRoute,
+            onNavigateToDetail = newsNavController::navigateToDetail
+          )
+        }
       }
     }
   }

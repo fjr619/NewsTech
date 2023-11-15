@@ -1,15 +1,12 @@
 package com.fjr619.newsloc.presentation.home
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.fjr619.newsloc.domain.usecase.news.NewsUseCases
-import com.fjr619.newsloc.presentation.common.pulltorefresh.PullToRefreshLayoutState
 import com.fjr619.newsloc.util.DateUtils
 import com.fjr619.newsloc.util.ResourceProvider
+import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayoutState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
@@ -21,7 +18,7 @@ class HomeViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
 ): ViewModel() {
 
-    var state by mutableStateOf(HomeState())
+//    var state by mutableStateOf(HomeState())
 
     val pullToRefreshState = PullToRefreshLayoutState(
         onTimeUpdated = { timeElapsed ->
@@ -39,7 +36,7 @@ class HomeViewModel @Inject constructor(
             )
         }.cachedIn(viewModelScope)
 
-    fun convertElapsedTimeIntoText(timeElapsed: Long): String {
+    private fun convertElapsedTimeIntoText(timeElapsed: Long): String {
         return DateUtils.getTimePassedInHourMinSec(resourceProvider, timeElapsed)
     }
 }

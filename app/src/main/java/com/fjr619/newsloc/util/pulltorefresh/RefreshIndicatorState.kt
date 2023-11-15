@@ -1,4 +1,4 @@
-package com.fjr619.newsloc.presentation.common.pulltorefresh
+package com.fjr619.newsloc.util.pulltorefresh
 
 import androidx.annotation.StringRes
 import com.fjr619.newsloc.R

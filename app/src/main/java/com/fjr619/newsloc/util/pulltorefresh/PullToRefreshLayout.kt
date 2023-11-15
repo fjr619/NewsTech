@@ -1,4 +1,4 @@
-package com.fjr619.newsloc.presentation.common.pulltorefresh
+package com.fjr619.newsloc.util.pulltorefresh
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,9 +9,9 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 /**
  * https://github.com/OyaCanli/tutorial_samples/tree/master/PullRefreshComposeSample
@@ -25,11 +25,9 @@ fun PullToRefreshLayout(
   onRefresh: () -> Unit,
   content: @Composable () -> Unit,
 ) {
-  val refreshIndicatorState by rememberSaveable {
-    pullRefreshLayoutState.refreshIndicatorState
-  }
+  val refreshIndicatorState by pullRefreshLayoutState.refreshIndicatorState.collectAsStateWithLifecycle()
 
-  val timeElapsedSinceLastRefresh by pullRefreshLayoutState.lastRefreshText
+  val timeElapsedSinceLastRefresh by pullRefreshLayoutState.lastRefreshText.collectAsStateWithLifecycle()
 
 
   val pullToRefreshState = rememberPullRefreshState(

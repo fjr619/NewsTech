@@ -28,8 +28,8 @@ import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
 import com.fjr619.newsloc.presentation.common.ArticlesList
 import com.fjr619.newsloc.presentation.common.SearchBar
-import com.fjr619.newsloc.presentation.common.pulltorefresh.PullToRefreshLayout
-import com.fjr619.newsloc.presentation.common.pulltorefresh.PullToRefreshLayoutState
+import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayout
+import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayoutState
 import com.fjr619.newsloc.presentation.news_navigator.MaterialNavScreen
 import com.fjr619.newsloc.ui.theme.customColorsPalette
 
@@ -107,7 +107,7 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxSize(),
                 pullRefreshLayoutState = pullToRefreshLayoutState,
                 onRefresh = {
-//                    pullToRefreshLayoutState.refresh()
+                    pullToRefreshLayoutState.refresh()
                 },
             ) {
                 ArticlesList(

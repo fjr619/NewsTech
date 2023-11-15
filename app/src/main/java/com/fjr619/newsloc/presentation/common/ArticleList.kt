@@ -12,8 +12,8 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
 import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
-import com.fjr619.newsloc.presentation.common.pulltorefresh.PullToRefreshLayoutState
-import com.fjr619.newsloc.presentation.common.pulltorefresh.RefreshIndicatorState
+import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayoutState
+import com.fjr619.newsloc.util.pulltorefresh.RefreshIndicatorState
 import com.fjr619.newsloc.presentation.home.components.ArticleCard
 
 @Composable

@@ -1,6 +1,5 @@
-package com.fjr619.newsloc.presentation.common.pulltorefresh
+package com.fjr619.newsloc.util.pulltorefresh
 
-import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,7 +29,6 @@ fun PullToRefreshIndicator(
   pullToRefreshProgress: Float,
   timeElapsed: String,
 ) {
-  Log.e("TAG","indicator $indicatorState")
 
   val heightModifier = when (indicatorState) {
     RefreshIndicatorState.PullingDown -> {
@@ -40,6 +38,7 @@ fun PullToRefreshIndicator(
           .coerceAtMost(maxHeight).dp,
       )
     }
+
     RefreshIndicatorState.ReachedThreshold -> Modifier.height(maxHeight.dp)
     RefreshIndicatorState.Refreshing -> Modifier.wrapContentHeight()
     RefreshIndicatorState.Default -> Modifier.height(0.dp)

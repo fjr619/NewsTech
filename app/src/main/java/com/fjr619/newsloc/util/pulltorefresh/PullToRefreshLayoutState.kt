@@ -1,7 +1,6 @@
-package com.fjr619.newsloc.presentation.common.pulltorefresh
+package com.fjr619.newsloc.util.pulltorefresh
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,20 +9,20 @@ class PullToRefreshLayoutState(
   val onTimeUpdated: (Long) -> String,
 ) {
 
-  private val _lastRefreshTime: MutableStateFlow<Long> = MutableStateFlow(System.currentTimeMillis())
+  private val _lastRefreshTime = MutableStateFlow(System.currentTimeMillis())
   val lastRefreshTime = _lastRefreshTime.asStateFlow()
 
-  var refreshIndicatorState = mutableStateOf(RefreshIndicatorState.Default)
-    private set
+  private var _refreshIndicatorState = MutableStateFlow(RefreshIndicatorState.Default)
+  var refreshIndicatorState = _refreshIndicatorState.asStateFlow()
 
-  var lastRefreshText = mutableStateOf("")
-    private set
+  private var _lastRefreshText = MutableStateFlow("")
+  var lastRefreshText = _lastRefreshText.asStateFlow()
 
   fun updateRefreshState(refreshState: RefreshIndicatorState) {
     val now = System.currentTimeMillis()
     val timeElapsed = now - _lastRefreshTime.value
-    lastRefreshText.value = onTimeUpdated(timeElapsed)
-    refreshIndicatorState.value = refreshState
+    _lastRefreshText.value = onTimeUpdated(timeElapsed)
+    _refreshIndicatorState.value = refreshState
   }
 
   fun refresh() {

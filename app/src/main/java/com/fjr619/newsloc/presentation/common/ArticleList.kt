@@ -2,7 +2,6 @@ package com.fjr619.newsloc.presentation.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,8 +11,9 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
 import com.fjr619.newsloc.domain.model.Article
-import com.fjr619.newsloc.presentation.Dimens.ExtraSmallPadding2
 import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
+import com.fjr619.newsloc.presentation.common.pulltorefresh.PullToRefreshLayoutState
+import com.fjr619.newsloc.presentation.common.pulltorefresh.RefreshIndicatorState
 import com.fjr619.newsloc.presentation.home.components.ArticleCard
 
 @Composable
@@ -45,10 +45,11 @@ fun ArticlesList2(
 fun ArticlesList(
     modifier: Modifier = Modifier,
     articles: LazyPagingItems<Article>,
+    pullToRefreshLayoutState: PullToRefreshLayoutState,
     onClickCard: (Article) -> Unit
 ) {
 
-    val handlePagingResult = handlePagingResult(articles)
+    val handlePagingResult = handlePagingResult(articles, pullToRefreshLayoutState)
 
 
     if (handlePagingResult) {
@@ -70,7 +71,7 @@ fun ArticlesList(
 }
 
 @Composable
-fun handlePagingResult(articles: LazyPagingItems<Article>): Boolean {
+fun handlePagingResult(articles: LazyPagingItems<Article>, pullToRefreshLayoutState: PullToRefreshLayoutState): Boolean {
     val loadState = articles.loadState
     val error = when {
         loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
@@ -81,16 +82,22 @@ fun handlePagingResult(articles: LazyPagingItems<Article>): Boolean {
 
     return when {
         loadState.refresh is LoadState.Loading -> {
-            ShimmerEffect()
-            false
+            if (pullToRefreshLayoutState.refreshIndicatorState.value == RefreshIndicatorState.Default){
+                ShimmerEffect()
+                false
+            } else{
+                true
+            }
         }
 
         error != null -> {
             EmptyScreen(error = error)
+            pullToRefreshLayoutState.updateRefreshState(RefreshIndicatorState.Default)
             false
         }
 
         else -> {
+            pullToRefreshLayoutState.updateRefreshState(RefreshIndicatorState.Default)
             true
         }
     }

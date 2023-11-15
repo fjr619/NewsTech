@@ -1,6 +1,9 @@
 package com.fjr619.newsloc.presentation.news_navigator
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
@@ -25,18 +28,19 @@ sealed class MaterialNavScreen(
   val route: String,
   val title: String,
   val icon: ImageVector,
+  val iconFiiled: ImageVector,
   val hasBadge: Boolean,
 ) {
   data object Home : MaterialNavScreen(
-    Route.HomeScreen.route, "Home", Icons.Outlined.Home, hasBadge = false
+    Route.HomeScreen.route, "Home", Icons.Outlined.Home, Icons.Filled.Home, hasBadge = false
   )
 
   data object Search : MaterialNavScreen(
-    Route.SearchScreen.route, "Search", Icons.Outlined.Search, hasBadge = false
+    Route.SearchScreen.route, "Search", Icons.Outlined.Search, Icons.Filled.Search, hasBadge = false
   )
 
   data object Bookmark : MaterialNavScreen(
-    Route.BookmarkScreen.route, "Bookmark", Icons.Outlined.FavoriteBorder, hasBadge = true
+    Route.BookmarkScreen.route, "Bookmark", Icons.Outlined.FavoriteBorder,Icons.Filled.Favorite, hasBadge = true
   )
 }
 

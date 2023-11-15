@@ -28,6 +28,8 @@ import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
 import com.fjr619.newsloc.presentation.common.ArticlesList
 import com.fjr619.newsloc.presentation.common.SearchBar
+import com.fjr619.newsloc.presentation.common.pulltorefresh.PullToRefreshLayout
+import com.fjr619.newsloc.presentation.common.pulltorefresh.PullToRefreshLayoutState
 import com.fjr619.newsloc.presentation.news_navigator.MaterialNavScreen
 import com.fjr619.newsloc.ui.theme.customColorsPalette
 
@@ -37,7 +39,8 @@ fun HomeScreen(
   paddingValues: PaddingValues,
   articles: LazyPagingItems<Article>,
   navigateToSearch: (MaterialNavScreen) -> Unit,
-  navigateToDetail: (Article) -> Unit
+  navigateToDetail: (Article) -> Unit,
+  pullToRefreshLayoutState: PullToRefreshLayoutState
 ) {
     val titles by remember {
         derivedStateOf {
@@ -50,6 +53,8 @@ fun HomeScreen(
             }
         }
     }
+
+
 
     Surface(
         modifier = Modifier
@@ -98,10 +103,21 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(MediumPadding1))
 
-            ArticlesList(
-                articles = articles,
-                onClickCard = navigateToDetail
-            )
+            PullToRefreshLayout(
+                modifier = Modifier.fillMaxSize(),
+                pullRefreshLayoutState = pullToRefreshLayoutState,
+                onRefresh = {
+//                    pullToRefreshLayoutState.refresh()
+                },
+            ) {
+                ArticlesList(
+                    articles = articles,
+                    onClickCard = navigateToDetail,
+                    pullToRefreshLayoutState = pullToRefreshLayoutState
+                )
+            }
+
+
         }
     }
 

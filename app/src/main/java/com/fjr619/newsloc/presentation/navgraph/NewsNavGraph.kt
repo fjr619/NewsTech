@@ -55,6 +55,9 @@ fun NewsGraph(
         val viewModel: HomeViewModel = hiltViewModel()
         val detailViewModel: DetailViewModel =
           from.hiltSharedViewModel(navController = navController)
+
+        val pullToRefreshState = viewModel.pullToRefreshState
+
         HomeScreen(
           paddingValues = paddingValues,
           articles = viewModel.news.collectAsLazyPagingItems(),
@@ -62,7 +65,8 @@ fun NewsGraph(
           navigateToDetail = {
             detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
             onNavigateToDetail(from)
-          }
+          },
+          pullToRefreshLayoutState = pullToRefreshState
         )
       }
 

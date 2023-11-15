@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
-import com.fjr619.newsloc.presentation.common.ArticlesList
 import com.fjr619.newsloc.presentation.common.SearchBar
 
 @Composable
@@ -43,13 +41,13 @@ fun SearchScreen(
             }
         )
         Spacer(modifier = Modifier.height(MediumPadding1))
-        state.articles?.let {
-            val articles = it.collectAsLazyPagingItems()
-            ArticlesList(
-                articles = articles,
-                onClickCard = navigateToDetail
-            )
-        }
+//        state.articles?.let {
+//            val articles = it.collectAsLazyPagingItems()
+//            ArticlesList(
+//                articles = articles,
+//                onClickCard = navigateToDetail,
+//            )
+//        }
     }
 
 }

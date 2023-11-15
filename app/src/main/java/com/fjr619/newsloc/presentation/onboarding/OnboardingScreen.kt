@@ -54,8 +54,8 @@ fun OnboardingScreen(
       derivedStateOf {
         when (pagerState.currentPage) {
           0 -> listOf("", "Next")
-          1, 2, 3, 4 -> listOf("Back", "Next")
-          5 -> listOf("Back", "Get Started")
+          1 -> listOf("Back", "Next")
+          2 -> listOf("Back", "Get Started")
           else -> listOf("", "")
         }
       }

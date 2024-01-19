@@ -6,15 +6,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
 import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
+import com.fjr619.newsloc.presentation.home.components.ArticleCard
 import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayoutState
 import com.fjr619.newsloc.util.pulltorefresh.RefreshIndicatorState
-import com.fjr619.newsloc.presentation.home.components.ArticleCard
 
 @Composable
 fun ArticlesList2(
@@ -73,6 +75,7 @@ fun ArticlesList(
 @Composable
 fun handlePagingResult(articles: LazyPagingItems<Article>, pullToRefreshLayoutState: PullToRefreshLayoutState): Boolean {
     val loadState = articles.loadState
+    val refreshIndicatorState by pullToRefreshLayoutState.refreshIndicatorState.collectAsStateWithLifecycle()
     val error = when {
         loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
         loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
@@ -82,7 +85,7 @@ fun handlePagingResult(articles: LazyPagingItems<Article>, pullToRefreshLayoutSt
 
     return when {
         loadState.refresh is LoadState.Loading -> {
-            if (pullToRefreshLayoutState.refreshIndicatorState.value == RefreshIndicatorState.Default){
+            if (refreshIndicatorState == RefreshIndicatorState.Default){
                 ShimmerEffect()
                 false
             } else{

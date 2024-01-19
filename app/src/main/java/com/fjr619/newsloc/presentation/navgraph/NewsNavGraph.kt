@@ -24,6 +24,7 @@ import com.fjr619.newsloc.presentation.common.NewsSnackbarVisual
 import com.fjr619.newsloc.presentation.detail.DetailEvent
 import com.fjr619.newsloc.presentation.detail.DetailScreen
 import com.fjr619.newsloc.presentation.detail.DetailViewModel
+import com.fjr619.newsloc.presentation.home.HomeEvent
 import com.fjr619.newsloc.presentation.home.HomeScreen
 import com.fjr619.newsloc.presentation.home.HomeViewModel
 import com.fjr619.newsloc.presentation.news_navigator.MaterialNavScreen
@@ -56,8 +57,6 @@ fun NewsGraph(
         val detailViewModel: DetailViewModel =
           from.hiltSharedViewModel(navController = navController)
 
-        val pullToRefreshState = viewModel.pullToRefreshState
-
         HomeScreen(
           paddingValues = paddingValues,
           articles = viewModel.news.collectAsLazyPagingItems(),
@@ -66,7 +65,10 @@ fun NewsGraph(
             detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
             onNavigateToDetail(from)
           },
-          pullToRefreshLayoutState = pullToRefreshState
+          pullToRefreshLayoutState = viewModel.pullToRefreshState,
+          onRefresh = {
+            viewModel.onEvent(HomeEvent.GetArticles)
+          }
         )
       }
 
@@ -114,15 +116,13 @@ fun NewsGraph(
               })
           })
 
-        viewState.article.run {
-          Surface(modifier = Modifier.fillMaxSize()) {
-            DetailScreen(
-              article = this,
-              bookmarkArticle = viewState.bookmark,
-              event = viewModel::onEvent,
-              navigateUp = { navController.popBackStack() },
-            )
-          }
+        Surface(modifier = Modifier.fillMaxSize()) {
+          DetailScreen(
+            article = viewState.article,
+            bookmarkArticle = viewState.bookmark,
+            event = viewModel::onEvent,
+            navigateUp = { navController.popBackStack() },
+          )
         }
       }
     }

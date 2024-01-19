@@ -28,10 +28,10 @@ import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
 import com.fjr619.newsloc.presentation.common.ArticlesList
 import com.fjr619.newsloc.presentation.common.SearchBar
-import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayout
-import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayoutState
 import com.fjr619.newsloc.presentation.news_navigator.MaterialNavScreen
 import com.fjr619.newsloc.ui.theme.customColorsPalette
+import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayout
+import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayoutState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -40,7 +40,8 @@ fun HomeScreen(
   articles: LazyPagingItems<Article>,
   navigateToSearch: (MaterialNavScreen) -> Unit,
   navigateToDetail: (Article) -> Unit,
-  pullToRefreshLayoutState: PullToRefreshLayoutState
+  pullToRefreshLayoutState: PullToRefreshLayoutState,
+  onRefresh: ()->Unit
 ) {
     val titles by remember {
         derivedStateOf {
@@ -106,9 +107,7 @@ fun HomeScreen(
             PullToRefreshLayout(
                 modifier = Modifier.fillMaxSize(),
                 pullRefreshLayoutState = pullToRefreshLayoutState,
-                onRefresh = {
-                    pullToRefreshLayoutState.refresh()
-                },
+                onRefresh = onRefresh,
             ) {
                 ArticlesList(
                     articles = articles,
@@ -116,8 +115,6 @@ fun HomeScreen(
                     pullToRefreshLayoutState = pullToRefreshLayoutState
                 )
             }
-
-
         }
     }
 

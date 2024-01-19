@@ -1,5 +1,6 @@
 package com.fjr619.newsloc.presentation.detail
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fjr619.newsloc.domain.model.Article
@@ -54,6 +55,10 @@ class DetailViewModel @Inject constructor(
 //        Log.e("TAG", "init detail viewmodel $article")
 //        onEvent(DetailEvent.GetBookmarkArticle(article))
 //    }
+
+  init {
+    Log.e("TAG", "init detail viewmodel")
+  }
 
   private suspend fun getBookmarkArticle(article: Article?) {
     _viewState.update {

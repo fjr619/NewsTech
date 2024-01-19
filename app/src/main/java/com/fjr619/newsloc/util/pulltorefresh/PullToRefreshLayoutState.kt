@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class PullToRefreshLayoutState(
-  val onTimeUpdated: (Long) -> String,
+  val onTimeUpdated: (Long) -> String = { _-> ""},
 ) {
 
   private val _lastRefreshTime = MutableStateFlow(System.currentTimeMillis())

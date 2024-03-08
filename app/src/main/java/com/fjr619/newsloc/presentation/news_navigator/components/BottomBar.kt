@@ -17,33 +17,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.fjr619.newsloc.presentation.news_navigator.MaterialNavScreen
-import com.fjr619.newsloc.presentation.news_navigator.MaterialNavigationState
+import com.fjr619.newsloc.presentation.navgraph.MaterialNavScreen
+import com.fjr619.newsloc.presentation.navgraph.NewsNavController
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomBar(
-//  newsNavController: NewsNavController,
-  materialNavigationState: MaterialNavigationState,
+  newsNavController: NewsNavController,
   screens: List<MaterialNavScreen>,
   onNavigateBottomBar: (MaterialNavScreen) -> Unit,
   countBookmark: Int
 ) {
 
-  if (materialNavigationState.showNavigation {
-      screens
-    }) {
+  if (newsNavController.showNavigation { screens }) {
     NavigationBar(
       modifier = Modifier
         .fillMaxWidth()
     ) {
 
       screens.forEachIndexed { index, screen ->
-        val selected = materialNavigationState.isSelected(screen).apply {
-          if (this) materialNavigationState.setCurrentIndex(index)
-        }
-
+        val selected = newsNavController.isSelected(screen)
+        
         NavigationBarItem(
           selected = selected,
           icon = {

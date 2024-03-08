@@ -16,13 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.fjr619.newsloc.presentation.news_navigator.MaterialNavScreen
-import com.fjr619.newsloc.presentation.news_navigator.MaterialNavigationState
+import com.fjr619.newsloc.presentation.navgraph.MaterialNavScreen
+import com.fjr619.newsloc.presentation.navgraph.NewsNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavRail(
-  materialNavigationState: MaterialNavigationState,
+  newsNavController: NewsNavController,
   screens: List<MaterialNavScreen>,
   onNavigateBottomBar: (MaterialNavScreen) -> Unit,
   countBookmark: Int
@@ -34,9 +34,8 @@ fun NavRail(
       verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Bottom),
     ) {
       screens.forEachIndexed { index, screen ->
-        val selected = materialNavigationState.isSelected(screen).apply {
-          if (this) materialNavigationState.setCurrentIndex(index)
-        }
+        val selected = newsNavController.isSelected(screen)
+
         NavigationRailItem(
           selected = selected,
           onClick = { onNavigateBottomBar(screen) },

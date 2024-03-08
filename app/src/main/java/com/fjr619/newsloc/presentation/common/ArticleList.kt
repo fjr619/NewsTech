@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
@@ -47,7 +46,7 @@ fun ArticlesList2(
 fun ArticlesList(
     modifier: Modifier = Modifier,
     articles: LazyPagingItems<Article>,
-    pullToRefreshLayoutState: PullToRefreshLayoutState,
+    pullToRefreshLayoutState: PullToRefreshLayoutState? = null,
     onClickCard: (Article) -> Unit
 ) {
 
@@ -73,9 +72,9 @@ fun ArticlesList(
 }
 
 @Composable
-fun handlePagingResult(articles: LazyPagingItems<Article>, pullToRefreshLayoutState: PullToRefreshLayoutState): Boolean {
+fun handlePagingResult(articles: LazyPagingItems<Article>, pullToRefreshLayoutState: PullToRefreshLayoutState?): Boolean {
     val loadState = articles.loadState
-    val refreshIndicatorState by pullToRefreshLayoutState.refreshIndicatorState.collectAsStateWithLifecycle()
+    val refreshIndicatorState = pullToRefreshLayoutState?.refreshIndicatorState?.collectAsStateWithLifecycle()
     val error = when {
         loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
         loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
@@ -85,7 +84,7 @@ fun handlePagingResult(articles: LazyPagingItems<Article>, pullToRefreshLayoutSt
 
     return when {
         loadState.refresh is LoadState.Loading -> {
-            if (refreshIndicatorState == RefreshIndicatorState.Default){
+            if (refreshIndicatorState?.value == RefreshIndicatorState.Default || pullToRefreshLayoutState == null){
                 ShimmerEffect()
                 false
             } else{
@@ -95,12 +94,12 @@ fun handlePagingResult(articles: LazyPagingItems<Article>, pullToRefreshLayoutSt
 
         error != null -> {
             EmptyScreen(error = error)
-            pullToRefreshLayoutState.updateRefreshState(RefreshIndicatorState.Default)
+            pullToRefreshLayoutState?.updateRefreshState(RefreshIndicatorState.Default)
             false
         }
 
         else -> {
-            pullToRefreshLayoutState.updateRefreshState(RefreshIndicatorState.Default)
+            pullToRefreshLayoutState?.updateRefreshState(RefreshIndicatorState.Default)
             true
         }
     }

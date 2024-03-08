@@ -13,13 +13,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.fjr619.newsloc.presentation.news_navigator.MaterialNavScreen
-import com.fjr619.newsloc.presentation.news_navigator.MaterialNavigationState
+import com.fjr619.newsloc.presentation.navgraph.MaterialNavScreen
+import com.fjr619.newsloc.presentation.navgraph.NewsNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PermanentNavDrawer(
-  materialNavigationState: MaterialNavigationState,
+  newsNavController: NewsNavController,
   screens: List<MaterialNavScreen>,
   onNavigateBottomBar: (MaterialNavScreen) -> Unit,
   countBookmark: Int
@@ -28,9 +28,7 @@ fun PermanentNavDrawer(
     modifier = Modifier.sizeIn(minWidth = 150.dp, maxWidth = 230.dp),
   ) {
     screens.forEachIndexed { index, screen ->
-      val selected = materialNavigationState.isSelected(screen).apply {
-        if (this) materialNavigationState.setCurrentIndex(index)
-      }
+      val selected = newsNavController.isSelected(screen)
 
       NavigationDrawerItem(
         selected = selected,

@@ -12,9 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.fjr619.newsloc.presentation.common.NewsSnackbar
 import com.fjr619.newsloc.presentation.mainactivity.NavigationType
+import com.fjr619.newsloc.presentation.navgraph.MaterialNavScreen
 import com.fjr619.newsloc.presentation.navgraph.NewsGraph
 import com.fjr619.newsloc.presentation.navgraph.rememberNewsNavController
 import com.fjr619.newsloc.presentation.news_navigator.components.BottomBar
@@ -29,10 +29,7 @@ fun NewsNavigator(
   countBookmark: Int,
 ) {
   val newsNavController = rememberNewsNavController()
-  val materialNavigationState = rememberMaterialNavigationState(
-    newsNavController = newsNavController,
-    navBackStackEntry = newsNavController.navController.currentBackStackEntryAsState(),
-  )
+
 
   val screens = listOf(
     MaterialNavScreen.Home,
@@ -57,10 +54,10 @@ fun NewsNavigator(
       bottomBar = {
         AnimatedVisibility(visible = navigationType == NavigationType.BOTTOM_NAV) {
           BottomBar(
-            materialNavigationState = materialNavigationState,
+            newsNavController = newsNavController,
             screens = screens,
             countBookmark = countBookmark,
-            onNavigateBottomBar = materialNavigationState::navigateToBottomBarRoute
+            onNavigateBottomBar = newsNavController::navigateToBottomBarRoute
           )
         }
       }
@@ -70,21 +67,21 @@ fun NewsNavigator(
         modifier = Modifier.fillMaxSize()
       ) {
 
-        AnimatedVisibility(visible = navigationType == NavigationType.NAV_RAIL && materialNavigationState.showNavigation { screens }) {
+        AnimatedVisibility(visible = navigationType == NavigationType.NAV_RAIL && newsNavController.showNavigation { screens }) {
           NavRail(
-            materialNavigationState = materialNavigationState,
+            newsNavController = newsNavController,
             screens = screens,
-            onNavigateBottomBar = materialNavigationState::navigateToBottomBarRoute,
+            onNavigateBottomBar = newsNavController::navigateToBottomBarRoute,
             countBookmark = countBookmark
           )
         }
 
         PermanentNavigationDrawer(drawerContent = {
-          AnimatedVisibility(visible = navigationType == NavigationType.PERMANENT_NAV_DRAWER && materialNavigationState.showNavigation { screens }) {
+          AnimatedVisibility(visible = navigationType == NavigationType.PERMANENT_NAV_DRAWER && newsNavController.showNavigation { screens }) {
             PermanentNavDrawer(
-              materialNavigationState = materialNavigationState,
+              newsNavController = newsNavController,
               screens = screens,
-              onNavigateBottomBar = materialNavigationState::navigateToBottomBarRoute,
+              onNavigateBottomBar = newsNavController::navigateToBottomBarRoute,
               countBookmark = countBookmark
             )
           }
@@ -93,7 +90,7 @@ fun NewsNavigator(
           NewsGraph(
             paddingValues = it,
             navController = newsNavController.navController,
-            onNavigateBottomBar = materialNavigationState::navigateToBottomBarRoute,
+            onNavigateBottomBar = newsNavController::navigateToBottomBarRoute,
             onNavigateToDetail = newsNavController::navigateToDetail,
             onNavigateBack = newsNavController::navigateBack
           )

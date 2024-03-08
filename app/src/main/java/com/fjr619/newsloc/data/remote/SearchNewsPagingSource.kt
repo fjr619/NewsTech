@@ -3,13 +3,15 @@ package com.fjr619.newsloc.data.remote
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.fjr619.newsloc.domain.model.Article
-import java.lang.Exception
 
 class SearchNewsPagingSource(
     private val api: NewsApi,
     private val searchQuery: String,
     private val sources: String
 ) : PagingSource<Int, Article>() {
+
+    override val keyReuseSupported: Boolean
+        get() = true
 
     override fun getRefreshKey(state: PagingState<Int, Article>): Int? {
         return state.anchorPosition?.let { anchorPage ->

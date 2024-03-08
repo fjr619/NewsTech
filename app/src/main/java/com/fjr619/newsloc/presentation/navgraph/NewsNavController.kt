@@ -68,4 +68,10 @@ class NewsNavController(
             )
         }
     }
+
+    fun navigateBack(from: NavBackStackEntry) {
+        if (from.lifecycleIsResumed()) {
+            navController.popBackStack()
+        }
+    }
 }

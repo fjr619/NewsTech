@@ -14,13 +14,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.fjr619.newsloc.presentation.common.NewsSnackbar
-import com.fjr619.newsloc.util.snackbar.ProvideSnackbarController
 import com.fjr619.newsloc.presentation.mainactivity.NavigationType
 import com.fjr619.newsloc.presentation.navgraph.NewsGraph
 import com.fjr619.newsloc.presentation.navgraph.rememberNewsNavController
 import com.fjr619.newsloc.presentation.news_navigator.components.BottomBar
 import com.fjr619.newsloc.presentation.news_navigator.components.NavRail
 import com.fjr619.newsloc.presentation.news_navigator.components.PermanentNavDrawer
+import com.fjr619.newsloc.util.snackbar.ProvideSnackbarController
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -94,7 +94,8 @@ fun NewsNavigator(
             paddingValues = it,
             navController = newsNavController.navController,
             onNavigateBottomBar = materialNavigationState::navigateToBottomBarRoute,
-            onNavigateToDetail = newsNavController::navigateToDetail
+            onNavigateToDetail = newsNavController::navigateToDetail,
+            onNavigateBack = newsNavController::navigateBack
           )
         }
       }

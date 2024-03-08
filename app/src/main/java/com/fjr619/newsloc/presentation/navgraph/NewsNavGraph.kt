@@ -40,6 +40,7 @@ fun NewsGraph(
   navController: NavHostController,
   onNavigateBottomBar: (MaterialNavScreen) -> Unit,
   onNavigateToDetail: (NavBackStackEntry) -> Unit,
+  onNavigateBack: (NavBackStackEntry) -> Unit
 ) {
 
   val snackbarController = LocalSnackbarController.current
@@ -121,7 +122,7 @@ fun NewsGraph(
             article = viewState.article,
             bookmarkArticle = viewState.bookmark,
             event = viewModel::onEvent,
-            navigateUp = { navController.popBackStack() },
+            navigateUp = { onNavigateBack(from) },
           )
         }
       }

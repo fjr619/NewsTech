@@ -12,7 +12,6 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph
@@ -69,8 +68,8 @@ class NewsNavController(
    * This is used to de-duplicate navigation events.
    */
 
-  private fun NavBackStackEntry.lifecycleIsResumed() =
-    this.lifecycle.currentState == Lifecycle.State.RESUMED
+  private fun lifecycleIsResumed() =
+    navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED
 
   /**
    * Copied from similar function in NavigationUI.kt
@@ -94,8 +93,8 @@ class NewsNavController(
     }
   }
 
-  fun navigateToDetail(from: NavBackStackEntry) {
-    if (from.lifecycleIsResumed()) {
+  fun navigateToDetail() {
+    if (lifecycleIsResumed()) {
 //            navController.currentBackStackEntry?.savedStateHandle?.set("article", article)
       navController.navigate(
         route = Route.DetailsScreen.route
@@ -103,8 +102,8 @@ class NewsNavController(
     }
   }
 
-  fun navigateBack(from: NavBackStackEntry) {
-    if (from.lifecycleIsResumed()) {
+  fun navigateBack() {
+    if (lifecycleIsResumed()) {
       navController.popBackStack()
     }
   }

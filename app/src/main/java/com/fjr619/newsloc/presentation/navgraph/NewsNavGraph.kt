@@ -38,8 +38,8 @@ fun NewsGraph(
   paddingValues: PaddingValues,
   navController: NavHostController,
   onNavigateBottomBar: (MaterialNavScreen) -> Unit,
-  onNavigateToDetail: (NavBackStackEntry) -> Unit,
-  onNavigateBack: (NavBackStackEntry) -> Unit
+  onNavigateToDetail: () -> Unit,
+  onNavigateBack: () -> Unit
 ) {
 
   val snackbarController = LocalSnackbarController.current
@@ -63,7 +63,7 @@ fun NewsGraph(
           navigateToSearch = onNavigateBottomBar,
           navigateToDetail = {
             detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
-            onNavigateToDetail(from)
+            onNavigateToDetail()
           },
           pullToRefreshLayoutState = viewModel.pullToRefreshState,
           onRefresh = {
@@ -83,7 +83,7 @@ fun NewsGraph(
           event = viewModel::onEvent,
           navigateToDetail = {
             detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
-            onNavigateToDetail(from)
+            onNavigateToDetail()
           }
         )
       }
@@ -95,7 +95,7 @@ fun NewsGraph(
         val state by viewModel.state
         BookmarkScreen(paddingValues = paddingValues, state = state, navigateToDetails = {
           detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
-          onNavigateToDetail(from)
+          onNavigateToDetail()
         })
       }
 
@@ -121,7 +121,7 @@ fun NewsGraph(
             article = viewState.article,
             bookmarkArticle = viewState.bookmark,
             event = viewModel::onEvent,
-            navigateUp = { onNavigateBack(from) },
+            navigateUp = { onNavigateBack() },
           )
         }
       }

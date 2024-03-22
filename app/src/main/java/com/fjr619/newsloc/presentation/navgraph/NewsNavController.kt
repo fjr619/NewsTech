@@ -105,7 +105,7 @@ class NewsNavController(
   fun navigateBack() {
     if (lifecycleIsResumed()) {
       navController.popBackStack()
-    }
+    }      
   }
 
   @Composable

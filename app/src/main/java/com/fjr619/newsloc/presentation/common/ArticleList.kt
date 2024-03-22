@@ -1,12 +1,35 @@
 package com.fjr619.newsloc.presentation.common
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.KeyboardArrowUp
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -16,6 +39,7 @@ import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
 import com.fjr619.newsloc.presentation.home.components.ArticleCard
 import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayoutState
 import com.fjr619.newsloc.util.pulltorefresh.RefreshIndicatorState
+import kotlinx.coroutines.launch
 
 @Composable
 fun ArticlesList2(
@@ -51,11 +75,20 @@ fun ArticlesList(
 ) {
 
     val handlePagingResult = handlePagingResult(articles, pullToRefreshLayoutState)
+    val scope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
 
+//    //Here we create a condition if the firstVisibleItemIndex is greater than 0
+//    val showButton by remember {
+//        derivedStateOf {
+//            listState.firstVisibleItemIndex > 0
+//        }
+//    }
 
     if (handlePagingResult) {
         LazyColumn(
             modifier = modifier.fillMaxSize(),
+            state = listState
 //            verticalArrangement = Arrangement.spacedBy(MediumPadding1),
         ) {
             items(
@@ -65,6 +98,14 @@ fun ArticlesList(
                 articles[it]?.let { article ->
                     ArticleCard(
                         article = article, onClick = { onClickCard(article) })
+                }
+            }
+        }
+
+        AnimatedVisibility(visible = !listState.isScrollingUp(), enter = fadeIn(), exit = fadeOut()) {
+            GoToTop {
+                scope.launch {
+                    listState.scrollToItem(0)
                 }
             }
         }
@@ -114,4 +155,44 @@ fun ShimmerEffect() {
             )
         }
     }
+}
+
+
+@Composable
+fun GoToTop(goToTop: () -> Unit) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        FloatingActionButton(
+            modifier = Modifier
+                .padding(16.dp)
+                .size(50.dp)
+                .align(Alignment.BottomEnd),
+            onClick = goToTop,
+            containerColor = White, contentColor = Black,
+            shape = CircleShape
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.KeyboardArrowUp,
+                contentDescription = "go to top"
+            )
+        }
+    }
+}
+
+@Composable
+fun LazyListState.isScrollingUp(): Boolean {
+    var previousIndex by rememberSaveable(this) { mutableIntStateOf(firstVisibleItemIndex) }
+    var previousScrollOffset by rememberSaveable(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
+
+    return remember(this) {
+        derivedStateOf {
+            if (previousIndex != firstVisibleItemIndex) {
+                previousIndex > firstVisibleItemIndex
+            } else {
+                previousScrollOffset >= firstVisibleItemScrollOffset
+            }.also {
+                previousIndex = firstVisibleItemIndex
+                previousScrollOffset = firstVisibleItemScrollOffset
+            }
+        }
+    }.value
 }

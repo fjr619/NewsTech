@@ -14,13 +14,16 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
-import com.fjr619.newsloc.presentation.navgraph.NavGraph
+import com.fjr619.newsloc.presentation.navgraph.OnboardingGraph
 import com.fjr619.newsloc.ui.theme.NewsLOCTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -55,11 +58,16 @@ class MainActivity : ComponentActivity() {
 
     setContent {
       val windowSizeClass = calculateWindowSizeClass(activity = this)
-      val navigationType = when (windowSizeClass.widthSizeClass) {
-        WindowWidthSizeClass.Compact -> NavigationType.BOTTOM_NAV
-        WindowWidthSizeClass.Medium -> NavigationType.NAV_RAIL
-        WindowWidthSizeClass.Expanded -> NavigationType.PERMANENT_NAV_DRAWER
-        else -> NavigationType.BOTTOM_NAV
+      val navigationType by remember(windowSizeClass.widthSizeClass) {
+        derivedStateOf {
+          when (windowSizeClass.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> NavigationType.BOTTOM_NAV
+            WindowWidthSizeClass.Medium -> NavigationType.NAV_RAIL
+            WindowWidthSizeClass.Expanded -> NavigationType.PERMANENT_NAV_DRAWER
+            else -> NavigationType.BOTTOM_NAV
+          }
+        }
+
       }
 
       NewsLOCTheme {
@@ -67,7 +75,7 @@ class MainActivity : ComponentActivity() {
         Surface(
           modifier = Modifier.fillMaxSize(),
         ) {
-          NavGraph(
+          OnboardingGraph(
             navController = rememberNavController(),
             startDestination = viewModel.startDestination.value,
             navigationType = navigationType,

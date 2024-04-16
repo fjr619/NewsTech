@@ -15,7 +15,7 @@ import com.fjr619.newsloc.presentation.onboarding.OnboardingScreen
 import com.fjr619.newsloc.presentation.onboarding.OnboardingViewModel
 
 @Composable
-fun NavGraph(
+fun OnboardingGraph(
   navController: NavHostController,
   navigationType: NavigationType,
   startDestination: String

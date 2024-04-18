@@ -23,9 +23,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.navigation.compose.rememberNavController
 import com.fjr619.newsloc.presentation.biometric.BiometricPromptManager
 import com.fjr619.newsloc.presentation.navgraph.OnboardingGraph
+import com.fjr619.newsloc.presentation.navgraph.rememberNewsNavController
 import com.fjr619.newsloc.ui.theme.NewsLOCTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         ) {
           println( "-- main activity ")
           OnboardingGraph(
-            navController = rememberNavController(),
+            newsNavController = rememberNewsNavController(),
             startDestination = viewModel.startDestination.value,
             navigationType = navigationType,
             promptManager = promptManager

@@ -62,18 +62,22 @@ fun OnboardingGraph(
       val viewModel: BiometricViewModel = hiltViewModel()
       val state by viewModel.state.collectAsStateWithLifecycle()
 
+
+
       BiometricScreen(
         state = state,
         promptManager = promptManager,
         updateResult = viewModel::updateResult,
         onConsumedSucceededEvent = viewModel::onConsumedSucceededEvent,
+        onConsumedShowDialogEvent = viewModel::onConsumedShowDialogEvent,
+        onTriggerShowDialogEvent = viewModel::onTriggerShowDialogEvent,
         navigateToMain = {
           navController.navigate(Route.NewsNavigation.route) {
             popUpTo(Route.RootNavigation.route) {
               inclusive = true
             }
           }
-        }
+        },
       )
     }
   }

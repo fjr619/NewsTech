@@ -10,6 +10,9 @@ import androidx.biometric.BiometricPrompt.PromptInfo
 class BiometricPromptManager (
   private val activity: AppCompatActivity,
 ) {
+
+  lateinit var prompt: BiometricPrompt
+
   fun showBiometricPrompt(
     title: String,
     description: String,
@@ -45,7 +48,7 @@ class BiometricPromptManager (
       else -> Unit
     }
 
-    val prompt = BiometricPrompt(
+    prompt = BiometricPrompt(
       activity,
       object : BiometricPrompt.AuthenticationCallback() {
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
@@ -65,6 +68,12 @@ class BiometricPromptManager (
       }
     )
     prompt.authenticate(promptInfo.build())
+  }
+
+  fun dismissAuthentication() {
+    if(this::prompt.isInitialized) {
+      prompt.cancelAuthentication()
+    }
   }
 
   sealed class BiometricResult {

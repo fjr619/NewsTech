@@ -5,5 +5,6 @@ import com.fjr619.newsloc.util.composestateevents.consumed
 
 data class BiometricUiState(
   val biometricResult: BiometricPromptManager.BiometricResult = BiometricPromptManager.BiometricResult.Init,
-  val processSucceededEvent: StateEvent = consumed
+  val processSucceededEvent: StateEvent = consumed,
+  val processShowPromptEvent: StateEvent = consumed
 )

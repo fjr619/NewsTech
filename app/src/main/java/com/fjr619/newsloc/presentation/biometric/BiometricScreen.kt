@@ -1,21 +1,19 @@
 package com.fjr619.newsloc.presentation.biometric
 
-import android.content.Intent
-import android.hardware.biometrics.BiometricManager
-import android.os.Build
-import android.provider.Settings
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.fjr619.newsloc.util.composestateevents.EventEffect
 
 @Composable
@@ -24,6 +22,8 @@ fun BiometricScreen(
   promptManager: BiometricPromptManager,
   updateResult: (BiometricPromptManager.BiometricResult) -> Unit,
   onConsumedSucceededEvent: () -> Unit,
+  onConsumedShowDialogEvent: () -> Unit,
+  onTriggerShowDialogEvent: () -> Unit,
   navigateToMain: () -> Unit
 ) {
   Surface(
@@ -31,50 +31,52 @@ fun BiometricScreen(
     color = MaterialTheme.colorScheme.background
   ) {
 
-    val enrollLauncher = rememberLauncherForActivityResult(
-      contract = ActivityResultContracts.StartActivityForResult(),
-      onResult = {
-        println("Activity result: $it")
-      }
-    )
-    LaunchedEffect(state) {
-      if (state.biometricResult is BiometricPromptManager.BiometricResult.AuthenticationNotSet) {
-        if (Build.VERSION.SDK_INT >= 30) {
-          val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-            putExtra(
-              Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-              BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL
-            )
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(key1 = lifecycleOwner) {
+      val observer = LifecycleEventObserver { _, event ->
+        when (event) {
+          Lifecycle.Event.ON_RESUME -> {
+            onTriggerShowDialogEvent()
           }
-          enrollLauncher.launch(enrollIntent)
+          Lifecycle.Event.ON_PAUSE -> {
+//            promptManager.dismissAuthentication()
+            onConsumedShowDialogEvent()
+          }
+          else -> {}
         }
       }
-    }
 
-    LaunchedEffect(Unit) {
-      println("LaunchedEffect")
-      if (state.biometricResult == BiometricPromptManager.BiometricResult.Init) {
-        promptManager.showBiometricPrompt(
-          title = "Sample prompt",
-          description = "Sample prompt description",
-          onResult = updateResult
-//          onResult = {
-//            updateResult(it)
-//
-//                //navigation bisa juga dilakukan di sini, karena ini actionnya dari callback dialog, sehingga aman, tidak akan terpanggil kembali
-//                if (it == BiometricPromptManager.BiometricResult.AuthenticationSuccess) {
-//                  navigateToMain()
-//                }
-//          }
-        )
+      // Add the observer to the lifecycle
+      lifecycleOwner.lifecycle.addObserver(observer)
+
+      // When the effect leaves the Composition, remove the observer
+      onDispose {
+        lifecycleOwner.lifecycle.removeObserver(observer)
       }
     }
 
-    //Event effect untuk melakukan action 1 time event
+
+    //Event effect untuk melakukan action 1 time event navigation
     EventEffect(
       event = state.processSucceededEvent,
       onConsumed = onConsumedSucceededEvent,
       action = navigateToMain
+    )
+
+    //Event effect untuk melakukan action 1 time event show dialog biometric
+    EventEffect(
+      event = state.processShowPromptEvent,
+      onConsumed = onConsumedShowDialogEvent,
+      action = {
+        if (state.biometricResult !is BiometricPromptManager.BiometricResult.AuthenticationSuccess) {
+          promptManager.showBiometricPrompt(
+            title = "Sample prompt",
+            description = "Sample prompt description",
+            onResult = updateResult
+          )
+        }
+      }
     )
 
     Column(
@@ -114,6 +116,12 @@ fun BiometricScreen(
             else -> ""
           }
         )
+        
+        if (result != BiometricPromptManager.BiometricResult.Init && result != BiometricPromptManager.BiometricResult.AuthenticationSuccess) {
+          Button(onClick = { onTriggerShowDialogEvent() }) {
+            Text(text = "Retry")
+          }
+        }
       }
     }
   }

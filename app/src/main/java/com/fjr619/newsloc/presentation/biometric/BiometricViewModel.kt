@@ -43,4 +43,20 @@ class BiometricViewModel @Inject constructor() : ViewModel() {
       )
     }
   }
+
+  fun onConsumedShowDialogEvent() {
+    _state.update {
+      it.copy(
+        processShowPromptEvent = consumed
+      )
+    }
+  }
+
+  fun onTriggerShowDialogEvent() {
+    _state.update {
+      it.copy(
+        processShowPromptEvent = triggered
+      )
+    }
+  }
 }

@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
+import com.fjr619.newsloc.presentation.biometric.BiometricPromptManager
 import com.fjr619.newsloc.presentation.navgraph.OnboardingGraph
 import com.fjr619.newsloc.ui.theme.NewsLOCTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,7 +35,7 @@ enum class NavigationType {
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-  val viewModel by viewModels<MainViewModel>()
+  private val viewModel by viewModels<MainViewModel>()
 
   private val promptManager by lazy {
     BiometricPromptManager(this)

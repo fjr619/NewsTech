@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,6 +36,7 @@ import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayoutState
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
+    paddingValues: PaddingValues,
     articles: LazyPagingItems<Article>,
     navigateToSearch: (MaterialNavScreen) -> Unit,
     navigateToDetail: (Article) -> Unit,
@@ -58,6 +60,7 @@ fun HomeScreen(
     Surface(
         modifier = Modifier
             .fillMaxSize()
+            .padding(paddingValues)
     ) {
         Column(
             modifier = Modifier

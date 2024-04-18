@@ -1,9 +1,9 @@
 package com.fjr619.newsloc.presentation.news_navigator
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -22,6 +22,7 @@ import com.fjr619.newsloc.presentation.news_navigator.components.NavRail
 import com.fjr619.newsloc.presentation.news_navigator.components.PermanentNavDrawer
 import com.fjr619.newsloc.util.snackbar.ProvideSnackbarController
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NewsNavigator(
   navigationType: NavigationType,
@@ -60,10 +61,10 @@ fun NewsNavigator(
           )
         }
       }
-    ) { paddingValues ->
+    ) {
 
       Row(
-        modifier = Modifier.fillMaxSize().padding(paddingValues)
+        modifier = Modifier.fillMaxSize()
       ) {
 
         AnimatedVisibility(visible = navigationType == NavigationType.NAV_RAIL && newsNavController.showNavigation { screens }) {
@@ -87,6 +88,7 @@ fun NewsNavigator(
         }
         ) {
           NewsGraph(
+            paddingValues = it,
             navController = newsNavController.navController,
             onNavigateBottomBar = newsNavController::navigateToBottomBarRoute,
             onNavigateToDetail = newsNavController::navigateToDetail,

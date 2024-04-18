@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -44,8 +43,7 @@ fun DetailScreen(
 
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding(),
+            .fillMaxSize(),
         topBar = {
             DetailTopBar(
                 bookmarkArticle = bookmarkArticle,
@@ -75,14 +73,10 @@ fun DetailScreen(
         }
     ) {paddingValues ->
         LazyColumn(
-            modifier = Modifier.fillMaxWidth().padding(
-                top = paddingValues.calculateTopPadding(),
-                bottom = paddingValues.calculateBottomPadding(),
-            ),
+            modifier = Modifier.fillMaxWidth().padding(paddingValues),
             contentPadding = PaddingValues(
                 start = MediumPadding1,
                 end = MediumPadding1,
-//                top = MediumPadding1
             )
         ) {
             item {

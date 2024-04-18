@@ -79,6 +79,7 @@ fun NewsGraph(
         val state by viewModel.state
 
         SearchScreen(
+          paddingValues = paddingValues,
           state = state,
           event = viewModel::onEvent,
           navigateToDetail = {

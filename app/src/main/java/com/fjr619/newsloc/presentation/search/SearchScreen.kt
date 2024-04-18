@@ -1,12 +1,11 @@
 package com.fjr619.newsloc.presentation.search
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -17,6 +16,7 @@ import com.fjr619.newsloc.presentation.common.SearchBar
 
 @Composable
 fun SearchScreen(
+    paddingValues: PaddingValues,
     state: SearchState,
     event: (SearchEvent) -> Unit,
     navigateToDetail: (Article) -> Unit,
@@ -26,8 +26,7 @@ fun SearchScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding()
+            .padding(paddingValues)
     ) {
         SearchBar(
             modifier = Modifier.padding(

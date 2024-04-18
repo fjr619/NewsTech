@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -22,13 +21,13 @@ import com.fjr619.newsloc.presentation.onboarding.OnboardingViewModel
 
 @Composable
 fun OnboardingGraph(
-  navController: NavHostController,
+  newsNavController: NewsNavController,
   navigationType: NavigationType,
   startDestination: String,
   promptManager: BiometricPromptManager
 ) {
   NavHost(
-    navController = navController,
+    navController = newsNavController.navController,
     route = Route.RootNavigation.route,
     startDestination = startDestination,
     enterTransition = { fadeIn(animationSpec = tween(200)) },
@@ -67,16 +66,9 @@ fun OnboardingGraph(
       BiometricScreen(
         state = state,
         promptManager = promptManager,
-        updateResult = viewModel::updateResult,
-        onConsumedSucceededEvent = viewModel::onConsumedSucceededEvent,
-        onConsumedShowDialogEvent = viewModel::onConsumedShowDialogEvent,
-        onTriggerShowDialogEvent = viewModel::onTriggerShowDialogEvent,
+        onBiometricEvent = viewModel::onEvent,
         navigateToMain = {
-          navController.navigate(Route.NewsNavigation.route) {
-            popUpTo(Route.RootNavigation.route) {
-              inclusive = true
-            }
-          }
+          newsNavController.navigateToMain()
         },
       )
     }

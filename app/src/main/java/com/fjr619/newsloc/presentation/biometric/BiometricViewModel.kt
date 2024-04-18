@@ -14,11 +14,18 @@ class BiometricViewModel @Inject constructor() : ViewModel() {
 
   private val _state = MutableStateFlow<BiometricUiState>(BiometricUiState())
   val state = _state.asStateFlow()
-  init {
-    println("init BiometricViewModel")
+
+  fun onEvent(event: BiometricEvent) {
+    when(event) {
+      is BiometricEvent.UpdateResult -> updateResult(event.result)
+      is BiometricEvent.ConsumedSucceedBiometric -> onConsumedSucceededEvent()
+      is BiometricEvent.ConsumedShowDialog -> onConsumedShowDialogEvent()
+      is BiometricEvent.TriggerShowDialog -> onTriggerShowDialogEvent()
+    }
   }
 
-  fun updateResult(biometricResult: BiometricPromptManager.BiometricResult) {
+
+  private fun updateResult(biometricResult: BiometricPromptManager.BiometricResult) {
     _state.update {
       it.copy(
         biometricResult = biometricResult
@@ -36,7 +43,7 @@ class BiometricViewModel @Inject constructor() : ViewModel() {
   }
 
   //1 time eventnya sudah terconsumed
-  fun onConsumedSucceededEvent() {
+  private fun onConsumedSucceededEvent() {
     _state.update {
       it.copy(
         processSucceededEvent = consumed
@@ -44,7 +51,7 @@ class BiometricViewModel @Inject constructor() : ViewModel() {
     }
   }
 
-  fun onConsumedShowDialogEvent() {
+  private fun onConsumedShowDialogEvent() {
     _state.update {
       it.copy(
         processShowPromptEvent = consumed
@@ -52,7 +59,7 @@ class BiometricViewModel @Inject constructor() : ViewModel() {
     }
   }
 
-  fun onTriggerShowDialogEvent() {
+  private fun onTriggerShowDialogEvent() {
     _state.update {
       it.copy(
         processShowPromptEvent = triggered

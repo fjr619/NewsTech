@@ -1,5 +1,6 @@
 package com.fjr619.newsloc.presentation.biometric
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -116,8 +117,10 @@ fun BiometricScreen(
             else -> ""
           }
         )
-        
-        if (result != BiometricPromptManager.BiometricResult.Init && result != BiometricPromptManager.BiometricResult.AuthenticationSuccess) {
+
+        AnimatedVisibility(visible =
+        result != BiometricPromptManager.BiometricResult.Init && result !=
+          BiometricPromptManager.BiometricResult.AuthenticationSuccess) {
           Button(onClick = { onTriggerShowDialogEvent() }) {
             Text(text = "Retry")
           }

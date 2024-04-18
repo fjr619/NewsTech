@@ -1,7 +1,6 @@
 package com.fjr619.newsloc.presentation.navgraph
 
 import android.util.Log
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -35,7 +34,6 @@ import com.fjr619.newsloc.util.snackbar.asString
 
 @Composable
 fun NewsGraph(
-  paddingValues: PaddingValues,
   navController: NavHostController,
   onNavigateBottomBar: (MaterialNavScreen) -> Unit,
   onNavigateToDetail: () -> Unit,
@@ -58,7 +56,6 @@ fun NewsGraph(
           from.hiltSharedViewModel(navController = navController)
 
         HomeScreen(
-          paddingValues = paddingValues,
           articles = viewModel.news.collectAsLazyPagingItems(),
           navigateToSearch = onNavigateBottomBar,
           navigateToDetail = {
@@ -93,7 +90,7 @@ fun NewsGraph(
         val detailViewModel: DetailViewModel =
           from.hiltSharedViewModel(navController = navController)
         val state by viewModel.state
-        BookmarkScreen(paddingValues = paddingValues, state = state, navigateToDetails = {
+        BookmarkScreen(state = state, navigateToDetails = {
           detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
           onNavigateToDetail()
         })

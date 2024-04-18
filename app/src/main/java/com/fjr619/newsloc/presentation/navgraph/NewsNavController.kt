@@ -108,16 +108,6 @@ class NewsNavController(
     }      
   }
 
-  fun navigateToMain() {
-    if (lifecycleIsResumed()) {
-      navController.navigate(Route.NewsNavigation.route) {
-        popUpTo(Route.RootNavigation.route) {
-          inclusive = true
-        }
-      }
-    }
-  }
-
   @Composable
   fun showNavigation(list: () -> List<MaterialNavScreen>): Boolean {
     return navController.currentBackStackEntryAsState().value?.destination?.route in list().map {

@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -21,13 +22,13 @@ import com.fjr619.newsloc.presentation.onboarding.OnboardingViewModel
 
 @Composable
 fun OnboardingGraph(
-  newsNavController: NewsNavController,
+  navController: NavHostController,
   navigationType: NavigationType,
   startDestination: String,
   promptManager: BiometricPromptManager
 ) {
   NavHost(
-    navController = newsNavController.navController,
+    navController = navController,
     route = Route.RootNavigation.route,
     startDestination = startDestination,
     enterTransition = { fadeIn(animationSpec = tween(200)) },
@@ -61,13 +62,22 @@ fun OnboardingGraph(
       val viewModel: BiometricViewModel = hiltViewModel()
       val state by viewModel.state.collectAsStateWithLifecycle()
 
+
+
       BiometricScreen(
         state = state,
         promptManager = promptManager,
-        onBiometricEvent = viewModel::onEvent,
+        updateResult = viewModel::updateResult,
+        onConsumedSucceededEvent = viewModel::onConsumedSucceededEvent,
+        onConsumedShowDialogEvent = viewModel::onConsumedShowDialogEvent,
+        onTriggerShowDialogEvent = viewModel::onTriggerShowDialogEvent,
         navigateToMain = {
-          newsNavController.navigateToMain()
-        }
+          navController.navigate(Route.NewsNavigation.route) {
+            popUpTo(Route.RootNavigation.route) {
+              inclusive = true
+            }
+          }
+        },
       )
     }
   }

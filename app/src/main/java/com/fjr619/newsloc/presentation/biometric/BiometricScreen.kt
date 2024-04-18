@@ -21,7 +21,10 @@ import com.fjr619.newsloc.util.composestateevents.EventEffect
 fun BiometricScreen(
   state: BiometricUiState,
   promptManager: BiometricPromptManager,
-  onBiometricEvent: (BiometricEvent) -> Unit,
+  updateResult: (BiometricPromptManager.BiometricResult) -> Unit,
+  onConsumedSucceededEvent: () -> Unit,
+  onConsumedShowDialogEvent: () -> Unit,
+  onTriggerShowDialogEvent: () -> Unit,
   navigateToMain: () -> Unit
 ) {
   Surface(
@@ -35,13 +38,12 @@ fun BiometricScreen(
       val observer = LifecycleEventObserver { _, event ->
         when (event) {
           Lifecycle.Event.ON_RESUME -> {
-            onBiometricEvent(BiometricEvent.TriggerShowDialog)
+            onTriggerShowDialogEvent()
           }
-
           Lifecycle.Event.ON_PAUSE -> {
-            onBiometricEvent(BiometricEvent.ConsumedShowDialog)
+//            promptManager.dismissAuthentication()
+            onConsumedShowDialogEvent()
           }
-
           else -> {}
         }
       }
@@ -59,26 +61,20 @@ fun BiometricScreen(
     //Event effect untuk melakukan action 1 time event navigation
     EventEffect(
       event = state.processSucceededEvent,
-      onConsumed = {
-        onBiometricEvent(BiometricEvent.ConsumedSucceedBiometric)
-      },
+      onConsumed = onConsumedSucceededEvent,
       action = navigateToMain
     )
 
     //Event effect untuk melakukan action 1 time event show dialog biometric
     EventEffect(
       event = state.processShowPromptEvent,
-      onConsumed = {
-        onBiometricEvent(BiometricEvent.ConsumedShowDialog)
-      },
+      onConsumed = onConsumedShowDialogEvent,
       action = {
         if (state.biometricResult !is BiometricPromptManager.BiometricResult.AuthenticationSuccess) {
           promptManager.showBiometricPrompt(
             title = "Sample prompt",
             description = "Sample prompt description",
-            onResult = {
-              onBiometricEvent(BiometricEvent.UpdateResult(it))
-            }
+            onResult = updateResult
           )
         }
       }
@@ -106,9 +102,9 @@ fun BiometricScreen(
               "Authentication not set"
             }
 
-            BiometricPromptManager.BiometricResult.AuthenticationSuccess -> {
-              "Authentication success"
-            }
+//                BiometricPromptManager.BiometricResult.AuthenticationSuccess -> {
+//                  "Authentication success"
+//                }
 
             BiometricPromptManager.BiometricResult.FeatureUnavailable -> {
               "Feature unavailable"
@@ -122,12 +118,10 @@ fun BiometricScreen(
           }
         )
 
-        AnimatedVisibility(
-          visible =
-          result != BiometricPromptManager.BiometricResult.Init && result !=
-            BiometricPromptManager.BiometricResult.AuthenticationSuccess
-        ) {
-          Button(onClick = { onBiometricEvent(BiometricEvent.TriggerShowDialog) }) {
+        AnimatedVisibility(visible =
+        result != BiometricPromptManager.BiometricResult.Init && result !=
+          BiometricPromptManager.BiometricResult.AuthenticationSuccess) {
+          Button(onClick = { onTriggerShowDialogEvent() }) {
             Text(text = "Retry")
           }
         }

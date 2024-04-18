@@ -6,6 +6,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
@@ -32,8 +33,15 @@ enum class NavigationType {
 }
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
   val viewModel by viewModels<MainViewModel>()
+
+  private val promptManager by lazy {
+    BiometricPromptManager(this)
+  }
+
+//  @Inject
+//  lateinit var promptManager: BiometricPromptManager
 
   /**
    * https://medium.com/scalereal/providing-assistedinject-supported-viewmodel-for-composable-using-hilt-ae973632e29a
@@ -75,10 +83,12 @@ class MainActivity : ComponentActivity() {
         Surface(
           modifier = Modifier.fillMaxSize(),
         ) {
+          println( "-- main activity ")
           OnboardingGraph(
             navController = rememberNavController(),
             startDestination = viewModel.startDestination.value,
             navigationType = navigationType,
+            promptManager = promptManager
           )
         }
       }

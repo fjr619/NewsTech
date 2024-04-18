@@ -1,12 +1,11 @@
 package com.fjr619.newsloc.presentation.mainactivity
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fjr619.newsloc.presentation.navgraph.Route
 import com.fjr619.newsloc.domain.usecase.appentry.AppEntryUseCases
+import com.fjr619.newsloc.presentation.navgraph.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
@@ -27,7 +26,7 @@ class MainViewModel @Inject constructor(
     init {
         appEntryUseCases.readAppEntry().onEach { shouldStartFromHomeScreen ->
             if(shouldStartFromHomeScreen){
-                _startDestination.value = Route.NewsNavigation.route
+                _startDestination.value = Route.TestScreen.route
             }else{
                 _startDestination.value = Route.AppStartNavigation.route
             }

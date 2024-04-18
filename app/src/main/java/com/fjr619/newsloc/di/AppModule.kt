@@ -1,10 +1,5 @@
 package com.fjr619.newsloc.di
 
-import android.app.Application
-import androidx.room.Room
-import com.fjr619.newsloc.data.local.NewsDao
-import com.fjr619.newsloc.data.local.NewsDatabase
-import com.fjr619.newsloc.data.local.NewsTypeConvertor
 import com.fjr619.newsloc.data.remote.NewsApi
 import com.fjr619.newsloc.domain.usecase.appentry.AppEntryUseCases
 import com.fjr619.newsloc.domain.usecase.appentry.ReadAppEntry
@@ -68,3 +63,11 @@ object AppModule {
         upsertArticle = upsertArticle
     )
 }
+
+//@InstallIn(ActivityComponent::class) // << Activity scoped
+//@Module
+//object InternalObjectModule {
+//    @Provides
+//    @ActivityScoped
+//    fun provideHomeManager(@ActivityContext context: Context) = BiometricPromptManager(context)
+//}

@@ -92,7 +92,10 @@ fun SharedTransitionScope.DetailScreen(
                         .build(),
                     contentDescription = null,
                     modifier = Modifier
-                        .sharedElement(rememberSharedContentState(key = "image-${article.url}"), animatedVisibilityScope)
+                        .sharedElement(
+                            rememberSharedContentState(key = "image-${article.url}"),
+                            animatedVisibilityScope
+                        )
                         .fillMaxWidth()
                         .height(ArticleImageHeight)
                         .clip(MaterialTheme.shapes.medium),
@@ -100,6 +103,10 @@ fun SharedTransitionScope.DetailScreen(
                 )
                 Spacer(modifier = Modifier.height(MediumPadding1))
                 Text(
+                    modifier = Modifier.sharedBounds(
+                        rememberSharedContentState(key = "text-${article.url}"),
+                        animatedVisibilityScope
+                    ),
                     text = article.title,
                     style = MaterialTheme.typography.displaySmall,
                     color = MaterialTheme.customColorsPalette.textTitle

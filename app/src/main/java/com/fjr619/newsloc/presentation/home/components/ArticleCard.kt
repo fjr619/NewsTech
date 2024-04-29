@@ -81,6 +81,10 @@ fun SharedTransitionScope.ArticleCard(
                 .height(ArticleCardSize)
         ) {
             Text(
+                modifier = Modifier.sharedBounds(
+                    rememberSharedContentState(key = "text-${article.url}"),
+                    animatedVisibilityScope
+                ),
                 text = article.title,
                 style = MaterialTheme.typography.bodyMedium.copy(),
                 color = MaterialTheme.customColorsPalette.textTitle,

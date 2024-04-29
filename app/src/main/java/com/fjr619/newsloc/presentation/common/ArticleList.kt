@@ -1,6 +1,8 @@
 package com.fjr619.newsloc.presentation.common
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
@@ -41,8 +43,9 @@ import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayoutState
 import com.fjr619.newsloc.util.pulltorefresh.RefreshIndicatorState
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun ArticlesList2(
+fun SharedTransitionScope.ArticlesList2(
     modifier: Modifier = Modifier,
     articles: List<Article>,
     onClickCard: (Article) -> Unit
@@ -58,16 +61,17 @@ fun ArticlesList2(
         items(
             count = articles.size,
         ) {
-            articles[it]?.let { article ->
-                ArticleCard(article = article, onClick = { onClickCard(article) })
+            articles[it].run {
+                ArticleCard(article = this, onClick = { onClickCard(this) })
             }
         }
     }
 
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun ArticlesList(
+fun SharedTransitionScope.ArticlesList(
     modifier: Modifier = Modifier,
     articles: LazyPagingItems<Article>,
     pullToRefreshLayoutState: PullToRefreshLayoutState? = null,

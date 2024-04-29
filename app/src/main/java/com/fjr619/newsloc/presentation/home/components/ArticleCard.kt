@@ -1,6 +1,8 @@
 package com.fjr619.newsloc.presentation.home.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,10 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,15 +35,19 @@ import com.fjr619.newsloc.presentation.Dimens.ArticleCardSize
 import com.fjr619.newsloc.presentation.Dimens.ExtraSmallPadding
 import com.fjr619.newsloc.presentation.Dimens.ExtraSmallPadding2
 import com.fjr619.newsloc.presentation.Dimens.SmallIconSize
+import com.fjr619.newsloc.presentation.navgraph.LocalAnimatedVisibilityScope
 import com.fjr619.newsloc.ui.theme.NewsLOCTheme
 import com.fjr619.newsloc.ui.theme.customColorsPalette
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun ArticleCard(
+fun SharedTransitionScope.ArticleCard(
     modifier: Modifier = Modifier,
     article: Article,
     onClick: (() -> Unit)? = null
 ) {
+
+    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
 
     val context = LocalContext.current
     Row(
@@ -54,6 +58,10 @@ fun ArticleCard(
         ) {
         AsyncImage(
             modifier = Modifier
+                .sharedElement(
+                    state = rememberSharedContentState(key = "image-${article.url}"),
+                    animatedVisibilityScope = animatedVisibilityScope
+                )
                 .size(ArticleCardSize)
                 .clip(MaterialTheme.shapes.medium),
             model = ImageRequest.Builder(context)
@@ -105,10 +113,11 @@ fun ArticleCard(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun ArticleCardPreview() {
+fun SharedTransitionScope.ArticleCardPreview() {
     NewsLOCTheme() {
         ArticleCard(
             article = Article(

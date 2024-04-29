@@ -1,5 +1,7 @@
 package com.fjr619.newsloc.presentation.search
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -14,8 +16,9 @@ import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
 import com.fjr619.newsloc.presentation.common.ArticlesList
 import com.fjr619.newsloc.presentation.common.SearchBar
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun SearchScreen(
+fun SharedTransitionScope.SearchScreen(
     paddingValues: PaddingValues,
     state: SearchState,
     event: (SearchEvent) -> Unit,

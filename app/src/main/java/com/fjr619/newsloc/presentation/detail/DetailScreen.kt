@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,27 +21,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.fjr619.newsloc.R
 import com.fjr619.newsloc.domain.model.Article
-import com.fjr619.newsloc.domain.model.Source
 import com.fjr619.newsloc.presentation.Dimens.ArticleImageHeight
 import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
 import com.fjr619.newsloc.presentation.detail.components.DetailTopBar
-import com.fjr619.newsloc.ui.theme.NewsLOCTheme
+import com.fjr619.newsloc.presentation.navgraph.LocalAnimatedVisibilityScope
 import com.fjr619.newsloc.ui.theme.customColorsPalette
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun DetailScreen(
+fun SharedTransitionScope.DetailScreen(
     article: Article,
     bookmarkArticle: Article?,
     event: (DetailEvent) -> Unit,
     navigateUp: () -> Unit
 ) {
     val context = LocalContext.current
+    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
 
     Scaffold(
         modifier = Modifier
@@ -73,7 +75,9 @@ fun DetailScreen(
         }
     ) {paddingValues ->
         LazyColumn(
-            modifier = Modifier.fillMaxWidth().padding(paddingValues),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(paddingValues),
             contentPadding = PaddingValues(
                 start = MediumPadding1,
                 end = MediumPadding1,
@@ -88,6 +92,7 @@ fun DetailScreen(
                         .build(),
                     contentDescription = null,
                     modifier = Modifier
+                        .sharedElement(rememberSharedContentState(key = "image-${article.url}"), animatedVisibilityScope)
                         .fillMaxWidth()
                         .height(ArticleImageHeight)
                         .clip(MaterialTheme.shapes.medium),
@@ -109,27 +114,29 @@ fun DetailScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DetailsScreenPreview() {
-    NewsLOCTheme(dynamicColor = false) {
-        DetailScreen(
-            article = Article(
-                author = "",
-                title = "Coinbase says Apple blocked its last app release on NFTs in Wallet ... - CryptoSaurus",
-                description = "Coinbase says Apple blocked its last app release on NFTs in Wallet ... - CryptoSaurus",
-                content = "We use cookies and data to Deliver and maintain Google services Track outages and protect against spam, fraud, and abuse Measure audience engagement and site statistics to unde… [+1131 chars]",
-                publishedAt = "2023-06-16T22:24:33Z",
-                source = Source(
-                    id = "", name = "bbc"
-                ),
-                url = "https://consent.google.com/ml?continue=https://news.google.com/rss/articles/CBMiaWh0dHBzOi8vY3J5cHRvc2F1cnVzLnRlY2gvY29pbmJhc2Utc2F5cy1hcHBsZS1ibG9ja2VkLWl0cy1sYXN0LWFwcC1yZWxlYXNlLW9uLW5mdHMtaW4td2FsbGV0LXJldXRlcnMtY29tL9IBAA?oc%3D5&gl=FR&hl=en-US&cm=2&pc=n&src=1",
-                urlToImage = "https://media.wired.com/photos/6495d5e893ba5cd8bbdc95af/191:100/w_1280,c_limit/The-EU-Rules-Phone-Batteries-Must-Be-Replaceable-Gear-2BE6PRN.jpg"
-            ),
-            event = {},
-            bookmarkArticle = null
-        ) {
-
-        }
-    }
-}
+//@OptIn(ExperimentalSharedTransitionApi::class)
+//@Preview(showBackground = true)
+//@Composable
+//fun SharedTransitionScope.DetailsScreenPreview() {
+//    NewsLOCTheme(dynamicColor = false) {
+//        DetailScreen(
+//            animatedVisibilityScope = this@composable,
+//            article = Article(
+//                author = "",
+//                title = "Coinbase says Apple blocked its last app release on NFTs in Wallet ... - CryptoSaurus",
+//                description = "Coinbase says Apple blocked its last app release on NFTs in Wallet ... - CryptoSaurus",
+//                content = "We use cookies and data to Deliver and maintain Google services Track outages and protect against spam, fraud, and abuse Measure audience engagement and site statistics to unde… [+1131 chars]",
+//                publishedAt = "2023-06-16T22:24:33Z",
+//                source = Source(
+//                    id = "", name = "bbc"
+//                ),
+//                url = "https://consent.google.com/ml?continue=https://news.google.com/rss/articles/CBMiaWh0dHBzOi8vY3J5cHRvc2F1cnVzLnRlY2gvY29pbmJhc2Utc2F5cy1hcHBsZS1ibG9ja2VkLWl0cy1sYXN0LWFwcC1yZWxlYXNlLW9uLW5mdHMtaW4td2FsbGV0LXJldXRlcnMtY29tL9IBAA?oc%3D5&gl=FR&hl=en-US&cm=2&pc=n&src=1",
+//                urlToImage = "https://media.wired.com/photos/6495d5e893ba5cd8bbdc95af/191:100/w_1280,c_limit/The-EU-Rules-Phone-Batteries-Must-Be-Replaceable-Gear-2BE6PRN.jpg"
+//            ),
+//            event = {},
+//            bookmarkArticle = null
+//        ) {
+//
+//        }
+//    }
+//}

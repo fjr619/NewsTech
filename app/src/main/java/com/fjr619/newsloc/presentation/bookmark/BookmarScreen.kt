@@ -1,27 +1,23 @@
 package com.fjr619.newsloc.presentation.bookmark
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.fjr619.newsloc.domain.model.Article
-import com.fjr619.newsloc.presentation.Dimens
 import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
 import com.fjr619.newsloc.presentation.common.ArticlesList2
-import com.fjr619.newsloc.ui.theme.customColorsPalette
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun BookmarkScreen(
+fun SharedTransitionScope.BookmarkScreen(
     paddingValues: PaddingValues,
     state: BookmarkState,
     navigateToDetails: (Article) -> Unit

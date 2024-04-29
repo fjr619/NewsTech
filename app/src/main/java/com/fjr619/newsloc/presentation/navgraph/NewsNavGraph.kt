@@ -1,13 +1,15 @@
 package com.fjr619.newsloc.presentation.navgraph
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -33,6 +35,9 @@ import com.fjr619.newsloc.util.composestateevents.EventEffect
 import com.fjr619.newsloc.util.snackbar.LocalSnackbarController
 import com.fjr619.newsloc.util.snackbar.asString
 
+val LocalAnimatedVisibilityScope = staticCompositionLocalOf<AnimatedVisibilityScope> { error("") }
+
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun NewsGraph(
   paddingValues: PaddingValues,
@@ -44,90 +49,100 @@ fun NewsGraph(
 
   val snackbarController = LocalSnackbarController.current
 
-  NavHost(
-    navController = navController,
-    startDestination = Route.NewsNavigation.route,
-  ) {
-    navigation(
-      route = Route.NewsNavigation.route,
-      startDestination = Route.HomeScreen.route
+  SharedTransitionLayout {
+    NavHost(
+      navController = navController,
+      startDestination = Route.NewsNavigation.route,
     ) {
-      composable(route = Route.HomeScreen.route) { from ->
-        val viewModel: HomeViewModel = hiltViewModel()
-        val detailViewModel: DetailViewModel =
-          from.hiltSharedViewModel(navController = navController)
+      navigation(
+        route = Route.NewsNavigation.route,
+        startDestination = Route.HomeScreen.route
+      ) {
+        composable(route = Route.HomeScreen.route) { from ->
+          val viewModel: HomeViewModel = hiltViewModel()
+          val detailViewModel: DetailViewModel =
+            from.hiltSharedViewModel(navController = navController)
 
-        HomeScreen(
-          paddingValues = paddingValues,
-          articles = viewModel.news.collectAsLazyPagingItems(),
-          navigateToSearch = onNavigateBottomBar,
-          navigateToDetail = {
-            detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
-            onNavigateToDetail()
-          },
-          pullToRefreshLayoutState = viewModel.pullToRefreshState,
-          onRefresh = {
-            viewModel.onEvent(HomeEvent.GetArticles)
+          CompositionLocalProvider(value = LocalAnimatedVisibilityScope provides this@composable) {
+            HomeScreen(
+              paddingValues = paddingValues,
+              articles = viewModel.news.collectAsLazyPagingItems(),
+              navigateToSearch = onNavigateBottomBar,
+              navigateToDetail = {
+                detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
+                onNavigateToDetail()
+              },
+              pullToRefreshLayoutState = viewModel.pullToRefreshState,
+              onRefresh = {
+                viewModel.onEvent(HomeEvent.GetArticles)
+              }
+            )
           }
-        )
-      }
+        }
 
-      composable(route = MaterialNavScreen.Search.route) { from ->
-        val viewModel: SearchViewModel = hiltViewModel()
-        val detailViewModel: DetailViewModel =
-          from.hiltSharedViewModel(navController = navController)
-        val state by viewModel.state
+        composable(route = MaterialNavScreen.Search.route) { from ->
+          val viewModel: SearchViewModel = hiltViewModel()
+          val detailViewModel: DetailViewModel =
+            from.hiltSharedViewModel(navController = navController)
+          val state by viewModel.state
 
-        SearchScreen(
-          paddingValues = paddingValues,
-          state = state,
-          event = viewModel::onEvent,
-          navigateToDetail = {
-            detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
-            onNavigateToDetail()
+          CompositionLocalProvider(value = LocalAnimatedVisibilityScope provides this@composable) {
+            SearchScreen(
+              paddingValues = paddingValues,
+              state = state,
+              event = viewModel::onEvent,
+              navigateToDetail = {
+                detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
+                onNavigateToDetail()
+              }
+            )
           }
-        )
-      }
+        }
 
-      composable(route = MaterialNavScreen.Bookmark.route) { from ->
-        val viewModel: BookmarkViewModel = hiltViewModel()
-        val detailViewModel: DetailViewModel =
-          from.hiltSharedViewModel(navController = navController)
-        val state by viewModel.state
-        BookmarkScreen(paddingValues = paddingValues, state = state, navigateToDetails = {
-          detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
-          onNavigateToDetail()
-        })
-      }
+        composable(route = MaterialNavScreen.Bookmark.route) { from ->
+          val viewModel: BookmarkViewModel = hiltViewModel()
+          val detailViewModel: DetailViewModel =
+            from.hiltSharedViewModel(navController = navController)
+          val state by viewModel.state
 
-      composable(route = Route.DetailsScreen.route) { from ->
-        val viewModel: DetailViewModel = from.hiltSharedViewModel(navController = navController)
-        val context = LocalContext.current
-        val viewState by viewModel.viewState.collectAsStateWithLifecycle()
+          CompositionLocalProvider(value = LocalAnimatedVisibilityScope provides this@composable) {
+            BookmarkScreen(paddingValues = paddingValues, state = state, navigateToDetails = {
+              detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
+              onNavigateToDetail()
+            })
+          }
+        }
 
-        EventEffect(
-          event = viewState.processSucceededEvent,
-          onConsumed = viewModel::onConsumedSucceededEvent,
-          action = {
-            snackbarController.showMessage(
-              NewsSnackbarVisual(
-                message = it.asString(context)
-              ), onSnackbarResult = { result ->
-                Log.e("TAG", "action run ${result.name}")
-              })
-          })
+        composable(route = Route.DetailsScreen.route) { from ->
+          val viewModel: DetailViewModel = from.hiltSharedViewModel(navController = navController)
+          val context = LocalContext.current
+          val viewState by viewModel.viewState.collectAsStateWithLifecycle()
 
-        Surface(modifier = Modifier.fillMaxSize()) {
-          DetailScreen(
-            article = viewState.article,
-            bookmarkArticle = viewState.bookmark,
-            event = viewModel::onEvent,
-            navigateUp = { onNavigateBack() },
-          )
+          EventEffect(
+            event = viewState.processSucceededEvent,
+            onConsumed = viewModel::onConsumedSucceededEvent,
+            action = {
+              snackbarController.showMessage(
+                NewsSnackbarVisual(
+                  message = it.asString(context)
+                ), onSnackbarResult = { result ->
+                  Log.e("TAG", "action run ${result.name}")
+                })
+            })
+
+          CompositionLocalProvider(value = LocalAnimatedVisibilityScope provides this@composable) {
+            DetailScreen(
+              article = viewState.article,
+              bookmarkArticle = viewState.bookmark,
+              event = viewModel::onEvent,
+              navigateUp = { onNavigateBack() },
+            )
+          }
         }
       }
     }
   }
+
 }
 
 @Composable

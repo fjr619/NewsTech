@@ -1,5 +1,7 @@
 package com.fjr619.newsloc.presentation.home
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
@@ -33,9 +35,9 @@ import com.fjr619.newsloc.ui.theme.customColorsPalette
 import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayout
 import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayoutState
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun HomeScreen(
+fun SharedTransitionScope.HomeScreen(
     paddingValues: PaddingValues,
     articles: LazyPagingItems<Article>,
     navigateToSearch: (MaterialNavScreen) -> Unit,
@@ -43,6 +45,7 @@ fun HomeScreen(
     pullToRefreshLayoutState: PullToRefreshLayoutState,
     onRefresh: ()->Unit
 ) {
+
     val titles by remember {
         derivedStateOf {
             if (articles.itemCount > 10) {
@@ -54,8 +57,6 @@ fun HomeScreen(
             }
         }
     }
-
-
 
     Surface(
         modifier = Modifier
@@ -111,8 +112,8 @@ fun HomeScreen(
             ) {
                 ArticlesList(
                     articles = articles,
-                    onClickCard = navigateToDetail,
-                    pullToRefreshLayoutState = pullToRefreshLayoutState
+                    pullToRefreshLayoutState = pullToRefreshLayoutState,
+                    onClickCard = navigateToDetail
                 )
             }
         }

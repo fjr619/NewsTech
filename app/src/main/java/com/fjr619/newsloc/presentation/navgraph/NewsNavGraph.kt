@@ -1,5 +1,6 @@
 package com.fjr619.newsloc.presentation.navgraph
 
+import android.app.Activity
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -41,14 +42,16 @@ val LocalAnimatedVisibilityScope = staticCompositionLocalOf<AnimatedVisibilitySc
 @Composable
 fun NewsGraph(
   paddingValues: PaddingValues,
-  navController: NavHostController,
-  onNavigateBottomBar: (MaterialNavScreen) -> Unit,
-  onNavigateToDetail: () -> Unit,
-  onNavigateBack: () -> Unit,
-  onExitApp: () -> Unit
+  newsNavController: NewsNavController,
+//  onNavigateBottomBar: (MaterialNavScreen) -> Unit,
+//  onNavigateToDetail: () -> Unit,
+//  onNavigateBack: () -> Unit,
+//  onExitApp: () -> Unit
 ) {
 
+  val navController = newsNavController.navController
   val snackbarController = LocalSnackbarController.current
+  val activity = LocalContext.current as? Activity
 
   SharedTransitionLayout {
     NavHost(
@@ -68,16 +71,18 @@ fun NewsGraph(
             HomeScreen(
               paddingValues = paddingValues,
               articles = viewModel.news.collectAsLazyPagingItems(),
-              navigateToSearch = onNavigateBottomBar,
+              navigateToSearch = newsNavController::navigateToBottomBarRoute,
               navigateToDetail = {
                 detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
-                onNavigateToDetail()
+                newsNavController.navigateToDetail()
               },
               pullToRefreshLayoutState = viewModel.pullToRefreshState,
               onRefresh = {
                 viewModel.onEvent(HomeEvent.GetArticles)
               },
-              onExitApp = onExitApp
+              onExitApp = {
+                activity?.finish()
+              }
             )
           }
         }
@@ -95,7 +100,7 @@ fun NewsGraph(
               event = viewModel::onEvent,
               navigateToDetail = {
                 detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
-                onNavigateToDetail()
+                newsNavController.navigateToDetail()
               }
             )
           }
@@ -110,7 +115,7 @@ fun NewsGraph(
           CompositionLocalProvider(value = LocalAnimatedVisibilityScope provides this@composable) {
             BookmarkScreen(paddingValues = paddingValues, state = state, navigateToDetails = {
               detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
-              onNavigateToDetail()
+              newsNavController.navigateToDetail()
             })
           }
         }
@@ -137,7 +142,7 @@ fun NewsGraph(
               article = viewState.article,
               bookmarkArticle = viewState.bookmark,
               event = viewModel::onEvent,
-              navigateUp = { onNavigateBack() },
+              navigateUp = newsNavController::navigateBack,
             )
           }
         }

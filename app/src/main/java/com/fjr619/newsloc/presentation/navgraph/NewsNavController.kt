@@ -12,6 +12,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -124,15 +125,20 @@ class NewsNavController(
 
   @Composable
   fun showNavigation(list: () -> List<MaterialNavScreen>): Boolean {
-    return navController.currentBackStackEntryAsState().value?.destination?.route in list().map {
+    return currentDestination()?.route in list().map {
       it.route
     }
   }
 
   @Composable
   fun isSelected(screen: MaterialNavScreen): Boolean {
-    return navController.currentBackStackEntryAsState().value?.destination?.hierarchy?.any {
+    return currentDestination()?.hierarchy?.any {
       it.route == screen.route
     } == true
+  }
+
+  @Composable
+  private fun currentDestination(): NavDestination? {
+    return navController.currentBackStackEntryAsState().value?.destination
   }
 }

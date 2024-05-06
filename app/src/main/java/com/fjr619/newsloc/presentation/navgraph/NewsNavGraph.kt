@@ -44,7 +44,8 @@ fun NewsGraph(
   navController: NavHostController,
   onNavigateBottomBar: (MaterialNavScreen) -> Unit,
   onNavigateToDetail: () -> Unit,
-  onNavigateBack: () -> Unit
+  onNavigateBack: () -> Unit,
+  onExitApp: () -> Unit
 ) {
 
   val snackbarController = LocalSnackbarController.current
@@ -75,7 +76,8 @@ fun NewsGraph(
               pullToRefreshLayoutState = viewModel.pullToRefreshState,
               onRefresh = {
                 viewModel.onEvent(HomeEvent.GetArticles)
-              }
+              },
+              onExitApp = onExitApp
             )
           }
         }

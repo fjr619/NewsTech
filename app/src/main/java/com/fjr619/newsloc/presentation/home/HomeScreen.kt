@@ -1,8 +1,9 @@
 package com.fjr619.newsloc.presentation.home
 
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Column
@@ -17,10 +18,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,14 +39,16 @@ import com.fjr619.newsloc.presentation.navgraph.MaterialNavScreen
 import com.fjr619.newsloc.ui.theme.customColorsPalette
 import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayout
 import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayoutState
+import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SharedTransitionScope.HomeScreen(
     paddingValues: PaddingValues,
     articles: LazyPagingItems<Article>,
     navigateToSearch: (MaterialNavScreen) -> Unit,
     navigateToDetail: (Article) -> Unit,
+    onExitApp: () -> Unit,
     pullToRefreshLayoutState: PullToRefreshLayoutState,
     onRefresh: ()->Unit
 ) {
@@ -55,6 +62,27 @@ fun SharedTransitionScope.HomeScreen(
             } else {
                 ""
             }
+        }
+    }
+
+    var exit by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    //https://stackoverflow.com/a/77613696
+    //handle double back press for exit application
+    LaunchedEffect(key1 = exit) {
+        if (exit) {
+            delay(2000)
+            exit = false
+        }
+    }
+
+    BackHandler {
+        if (exit) {
+            onExitApp()
+        } else {
+            exit = true
+            Toast.makeText(context, "Press again to exit", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.fjr619.newsloc.presentation.common.NewsSnackbar
 import com.fjr619.newsloc.presentation.mainactivity.NavigationType
 import com.fjr619.newsloc.presentation.navgraph.MaterialNavScreen
@@ -21,6 +22,7 @@ import com.fjr619.newsloc.presentation.news_navigator.components.BottomBar
 import com.fjr619.newsloc.presentation.news_navigator.components.NavRail
 import com.fjr619.newsloc.presentation.news_navigator.components.PermanentNavDrawer
 import com.fjr619.newsloc.util.snackbar.ProvideSnackbarController
+import kotlin.system.exitProcess
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -87,12 +89,18 @@ fun NewsNavigator(
           }
         }
         ) {
+
+          val context = LocalContext.current
+
           NewsGraph(
             paddingValues = it,
             navController = newsNavController.navController,
             onNavigateBottomBar = newsNavController::navigateToBottomBarRoute,
             onNavigateToDetail = newsNavController::navigateToDetail,
-            onNavigateBack = newsNavController::navigateBack
+            onNavigateBack = newsNavController::navigateBack,
+            onExitApp = {
+              exitProcess(0)
+            }
           )
         }
       }

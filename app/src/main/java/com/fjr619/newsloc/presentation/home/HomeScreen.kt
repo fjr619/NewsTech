@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Column
@@ -41,7 +42,7 @@ import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayout
 import com.fjr619.newsloc.util.pulltorefresh.PullToRefreshLayoutState
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun SharedTransitionScope.HomeScreen(
     paddingValues: PaddingValues,

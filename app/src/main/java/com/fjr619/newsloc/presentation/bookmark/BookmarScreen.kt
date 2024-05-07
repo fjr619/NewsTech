@@ -13,14 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
-import com.fjr619.newsloc.presentation.common.ArticlesList2
+import com.fjr619.newsloc.presentation.common.ArticlesListBookmark
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SharedTransitionScope.BookmarkScreen(
     paddingValues: PaddingValues,
     state: BookmarkState,
-    navigateToDetails: (Article) -> Unit
+    navigateToDetails: (Article) -> Unit,
+    onDelete: (Article) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -37,9 +38,10 @@ fun SharedTransitionScope.BookmarkScreen(
 
 //        Spacer(modifier = Modifier.height(16.dp))
 
-        ArticlesList2(
+        ArticlesListBookmark(
             articles = state.articles,
-            onClickCard = navigateToDetails
+            onClickCard = navigateToDetails,
+            onDelete = onDelete
         )
     }
 }

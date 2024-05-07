@@ -111,11 +111,28 @@ fun NewsGraph(
           val detailViewModel: DetailViewModel =
             from.hiltSharedViewModel(navController = navController)
           val state by viewModel.state
+          val context = LocalContext.current
+          val detailViewState by detailViewModel.viewState.collectAsStateWithLifecycle()
+
+          EventEffect(
+            event = detailViewState.processSucceededEvent,
+            onConsumed = detailViewModel::onConsumedSucceededEvent,
+            action = {
+              snackbarController.showMessage(
+                NewsSnackbarVisual(
+                  message = it.asString(context)
+                ), onSnackbarResult = { result ->
+                  Log.e("TAG", "action run ${result.name}")
+                })
+            })
+
 
           CompositionLocalProvider(value = LocalAnimatedVisibilityScope provides this@composable) {
             BookmarkScreen(paddingValues = paddingValues, state = state, navigateToDetails = {
               detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
               newsNavController.navigateToDetail()
+            }, onDelete = {
+              detailViewModel.onEvent(DetailEvent.UpsertDeleteArticle(it))
             })
           }
         }

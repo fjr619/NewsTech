@@ -72,7 +72,7 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.compose.ui:ui:1.7.0-alpha08")
     implementation("androidx.compose.animation:animation:1.7.0-alpha08")
-    implementation("androidx.compose.foundation:foundation:1.7.0-alpha08")
+//    implementation("androidx.compose.foundation:foundation")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

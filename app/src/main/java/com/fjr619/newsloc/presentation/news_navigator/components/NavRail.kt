@@ -33,7 +33,7 @@ fun NavRail(
       modifier = Modifier.fillMaxHeight(),
       verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Bottom),
     ) {
-      screens.forEachIndexed { index, screen ->
+      screens.forEach { screen ->
         val selected = newsNavController.isSelected(screen)
 
         NavigationRailItem(

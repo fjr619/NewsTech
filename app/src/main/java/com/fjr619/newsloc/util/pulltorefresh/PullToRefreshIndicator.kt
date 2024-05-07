@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -74,7 +75,7 @@ fun PullToRefreshIndicator(
         AnimatedVisibility(visible = indicatorState != RefreshIndicatorState.Refreshing) {
           Icon(
             modifier = Modifier.rotate(arrowDegree).size(10.dp),
-            imageVector = Icons.Default.ArrowBack, contentDescription = null)
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
         }
 
         Text(

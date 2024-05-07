@@ -27,7 +27,7 @@ fun PermanentNavDrawer(
   PermanentDrawerSheet(
     modifier = Modifier.sizeIn(minWidth = 150.dp, maxWidth = 230.dp),
   ) {
-    screens.forEachIndexed { index, screen ->
+    screens.forEach { screen ->
       val selected = newsNavController.isSelected(screen)
 
       NavigationDrawerItem(

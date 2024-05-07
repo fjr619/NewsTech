@@ -36,7 +36,7 @@ fun BottomBar(
         .fillMaxWidth()
     ) {
 
-      screens.forEachIndexed { index, screen ->
+      screens.forEach { screen ->
         val selected = newsNavController.isSelected(screen)
         
         NavigationBarItem(

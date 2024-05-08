@@ -26,13 +26,17 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
+import androidx.core.view.HapticFeedbackConstantsCompat
+import kotlinx.coroutines.flow.drop
 import kotlin.math.abs
 
 @SuppressLint("RememberReturnType")
@@ -44,6 +48,7 @@ fun SwipeBox(
   content: @Composable () -> Unit
 ) {
 
+  val view = LocalView.current
   val icon: ImageVector = Icons.Outlined.Delete
   val alignment: Alignment = Alignment.CenterEnd
   var color: Color = Color.Transparent
@@ -73,10 +78,6 @@ fun SwipeBox(
     }
   )
 
-  if (offsetMatch) {
-    println("aAAAAA")
-  }
-
   val iconSize = animateDpAsState(
     targetValue = if (offsetMatch) {
       40.dp
@@ -97,6 +98,16 @@ fun SwipeBox(
       ).value
     }
     else -> {}
+  }
+
+  LaunchedEffect(Unit) {
+    snapshotFlow {offsetMatch}
+      .drop(1)
+      .collect {
+        view.performHapticFeedback(
+          HapticFeedbackConstantsCompat.CLOCK_TICK
+        )
+      }
   }
 
   SwipeToDismissBox(

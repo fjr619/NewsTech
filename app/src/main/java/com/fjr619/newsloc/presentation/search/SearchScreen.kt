@@ -48,6 +48,7 @@ fun SharedTransitionScope.SearchScreen(
         state.articles?.let {
             val articles = it.collectAsLazyPagingItems()
             ArticlesList(
+                prefixSharedKey = "search",
                 articles = articles,
                 onClickCard = navigateToDetail,
             )

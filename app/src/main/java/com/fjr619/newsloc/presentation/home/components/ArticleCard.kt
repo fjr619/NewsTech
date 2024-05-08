@@ -44,6 +44,7 @@ import com.fjr619.newsloc.ui.theme.customColorsPalette
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SharedTransitionScope.ArticleCard(
+    prefixSharedKey: String,
     modifier: Modifier = Modifier,
     article: Article,
     onClick: (() -> Unit)? = null
@@ -61,7 +62,7 @@ fun SharedTransitionScope.ArticleCard(
         AsyncImage(
             modifier = Modifier
                 .sharedElement(
-                    state = rememberSharedContentState(key = "image-${article.url}"),
+                    state = rememberSharedContentState(key = "$prefixSharedKey-image-${article.url}"),
                     animatedVisibilityScope = animatedVisibilityScope
                 )
                 .size(ArticleCardSize)
@@ -84,7 +85,7 @@ fun SharedTransitionScope.ArticleCard(
         ) {
             Text(
                 modifier = Modifier.sharedBounds(
-                    rememberSharedContentState(key = "text-${article.url}"),
+                    rememberSharedContentState(key = "$prefixSharedKey-text-${article.url}"),
                     animatedVisibilityScope
                 ),
                 text = article.title,
@@ -119,23 +120,23 @@ fun SharedTransitionScope.ArticleCard(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun SharedTransitionScope.ArticleCardPreview() {
-    NewsLOCTheme() {
-        ArticleCard(
-            article = Article(
-                author = "",
-                content = "",
-                description = "",
-                publishedAt = "2 hours",
-                source = Source(id = "", name = "BBC"),
-                title = "Her train broke down. Her phone died. And then she met her Saver in a",
-                url = "",
-                urlToImage = "https://ichef.bbci.co.uk/live-experience/cps/624/cpsprodpb/11787/production/_124395517_bbcbreakingnewsgraphic.jpg"
-            )
-        )
-    }
-}
+//@OptIn(ExperimentalSharedTransitionApi::class)
+//@Preview(showBackground = true)
+//@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+//@Composable
+//fun SharedTransitionScope.ArticleCardPreview() {
+//    NewsLOCTheme() {
+//        ArticleCard(
+//            article = Article(
+//                author = "",
+//                content = "",
+//                description = "",
+//                publishedAt = "2 hours",
+//                source = Source(id = "", name = "BBC"),
+//                title = "Her train broke down. Her phone died. And then she met her Saver in a",
+//                url = "",
+//                urlToImage = "https://ichef.bbci.co.uk/live-experience/cps/624/cpsprodpb/11787/production/_124395517_bbcbreakingnewsgraphic.jpg"
+//            )
+//        )
+//    }
+//}

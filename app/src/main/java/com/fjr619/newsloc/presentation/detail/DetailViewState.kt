@@ -16,5 +16,6 @@ data class DetailViewState(
     url = ""
   ),
   val bookmark: Article? = null,
+  val prefixSharedKey: String? = null,
   val processSucceededEvent: StateEventWithContent<UserMessage> = consumed()
 )

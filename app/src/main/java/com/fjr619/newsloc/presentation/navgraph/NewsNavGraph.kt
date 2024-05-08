@@ -74,6 +74,7 @@ fun NewsGraph(
               navigateToSearch = newsNavController::navigateToBottomBarRoute,
               navigateToDetail = {
                 detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
+                detailViewModel.onEvent(DetailEvent.SetPrefixSharedKey("home"))
                 newsNavController.navigateToDetail()
               },
               pullToRefreshLayoutState = viewModel.pullToRefreshState,
@@ -100,6 +101,7 @@ fun NewsGraph(
               event = viewModel::onEvent,
               navigateToDetail = {
                 detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
+                detailViewModel.onEvent(DetailEvent.SetPrefixSharedKey("search"))
                 newsNavController.navigateToDetail()
               }
             )
@@ -118,18 +120,19 @@ fun NewsGraph(
             event = detailViewState.processSucceededEvent,
             onConsumed = detailViewModel::onConsumedSucceededEvent,
             action = {
-              snackbarController.showMessage(
-                NewsSnackbarVisual(
-                  message = it.asString(context)
-                ), onSnackbarResult = { result ->
-                  Log.e("TAG", "action run ${result.name}")
-                })
+//              snackbarController.showMessage(
+//                NewsSnackbarVisual(
+//                  message = it.asString(context)
+//                ), onSnackbarResult = { result ->
+//                  Log.e("TAG", "action run ${result.name}")
+//                })
             })
 
 
           CompositionLocalProvider(value = LocalAnimatedVisibilityScope provides this@composable) {
             BookmarkScreen(paddingValues = paddingValues, state = state, navigateToDetails = {
               detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
+              detailViewModel.onEvent(DetailEvent.SetPrefixSharedKey("bookmark"))
               newsNavController.navigateToDetail()
             }, onDelete = {
               detailViewModel.onEvent(DetailEvent.UpsertDeleteArticle(it))
@@ -156,6 +159,7 @@ fun NewsGraph(
 
           CompositionLocalProvider(value = LocalAnimatedVisibilityScope provides this@composable) {
             DetailScreen(
+              prefixSharedKey = viewState.prefixSharedKey ?: "home",
               article = viewState.article,
               bookmarkArticle = viewState.bookmark,
               event = viewModel::onEvent,

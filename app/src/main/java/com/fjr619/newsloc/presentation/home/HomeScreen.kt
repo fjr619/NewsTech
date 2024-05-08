@@ -140,6 +140,7 @@ fun SharedTransitionScope.HomeScreen(
                 onRefresh = onRefresh,
             ) {
                 ArticlesList(
+                    prefixSharedKey = "home",
                     articles = articles,
                     pullToRefreshLayoutState = pullToRefreshLayoutState,
                     onClickCard = navigateToDetail

@@ -91,6 +91,7 @@ fun SharedTransitionScope.ArticlesListBookmark(
           onDelete(it)
       }, modifier = Modifier.animateItemPlacement()) {
         ArticleCard(
+          prefixSharedKey = "bookmark",
           modifier = Modifier.clip(RoundedCornerShape(16.dp)).background(MaterialTheme.colorScheme.surface),
           article = it, onClick = { onClickCard(it) })
       }
@@ -102,6 +103,7 @@ fun SharedTransitionScope.ArticlesListBookmark(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SharedTransitionScope.ArticlesList(
+  prefixSharedKey: String,
   modifier: Modifier = Modifier,
   articles: LazyPagingItems<Article>,
   pullToRefreshLayoutState: PullToRefreshLayoutState? = null,
@@ -131,6 +133,7 @@ fun SharedTransitionScope.ArticlesList(
       ) {
         articles[it]?.let { article ->
           ArticleCard(
+            prefixSharedKey = prefixSharedKey,
             article = article, onClick = { onClickCard(article) })
         }
       }

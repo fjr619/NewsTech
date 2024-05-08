@@ -35,6 +35,7 @@ import com.fjr619.newsloc.ui.theme.customColorsPalette
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SharedTransitionScope.DetailScreen(
+    prefixSharedKey: String,
     article: Article,
     bookmarkArticle: Article?,
     event: (DetailEvent) -> Unit,
@@ -93,7 +94,7 @@ fun SharedTransitionScope.DetailScreen(
                     contentDescription = null,
                     modifier = Modifier
                         .sharedElement(
-                            rememberSharedContentState(key = "image-${article.url}"),
+                            rememberSharedContentState(key = "$prefixSharedKey-image-${article.url}"),
                             animatedVisibilityScope
                         )
                         .fillMaxWidth()
@@ -104,7 +105,7 @@ fun SharedTransitionScope.DetailScreen(
                 Spacer(modifier = Modifier.height(MediumPadding1))
                 Text(
                     modifier = Modifier.sharedBounds(
-                        rememberSharedContentState(key = "text-${article.url}"),
+                        rememberSharedContentState(key = "$prefixSharedKey-text-${article.url}"),
                         animatedVisibilityScope
                     ),
                     text = article.title,

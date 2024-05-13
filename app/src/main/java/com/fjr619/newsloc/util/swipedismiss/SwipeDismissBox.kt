@@ -40,7 +40,7 @@ import kotlinx.coroutines.flow.drop
 import kotlin.math.abs
 
 @SuppressLint("RememberReturnType")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwipeBox(
   modifier: Modifier = Modifier,
@@ -48,6 +48,9 @@ fun SwipeBox(
   content: @Composable () -> Unit
 ) {
 
+  val threshold by remember {
+    mutableStateOf(150.dp)
+  }
   val view = LocalView.current
   val icon: ImageVector = Icons.Outlined.Delete
   val alignment: Alignment = Alignment.CenterEnd
@@ -58,7 +61,7 @@ fun SwipeBox(
     derivedStateOf {
       mutableStateOf(
         abs(offset) >= with(density) {
-          { 150.dp.toPx() }
+          { threshold.toPx() }
         }.invoke()
       ).value
     }
@@ -74,13 +77,13 @@ fun SwipeBox(
       } else false
     },
     positionalThreshold = with(density) {
-      { 150.dp.toPx() }
+      { threshold.toPx() }
     }
   )
 
   val iconSize = animateDpAsState(
     targetValue = if (offsetMatch) {
-      40.dp
+      35.dp
     } else {
       24.dp
     }, label = ""
@@ -88,7 +91,6 @@ fun SwipeBox(
 
   when (swipeState.dismissDirection) {
     SwipeToDismissBoxValue.EndToStart -> {
-
       color = animateColorAsState(
         targetValue = if (offsetMatch) {
           MaterialTheme.colorScheme.errorContainer
@@ -141,25 +143,4 @@ fun SwipeBox(
   ) {
     content()
   }
-
-//  when (swipeState.currentValue) {
-//    SwipeToDismissBoxValue.EndToStart -> {
-//      LaunchedEffect(swipeState) {
-//        onDelete()
-//        swipeState.snapTo(SwipeToDismissBoxValue.Settled)
-//      }
-//    }
-//
-//    else -> {}
-
-//    SwipeToDismissBoxValue.StartToEnd -> {
-//      LaunchedEffect(swipeState) {
-////        onEdit()
-//        swipeState.snapTo(SwipeToDismissBoxValue.Settled)
-//      }
-//    }
-//
-//    SwipeToDismissBoxValue.Settled -> {
-//    }
-//  }
 }

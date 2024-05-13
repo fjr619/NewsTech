@@ -8,6 +8,7 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -37,6 +38,7 @@ import com.fjr619.newsloc.util.snackbar.LocalSnackbarController
 import com.fjr619.newsloc.util.snackbar.asString
 
 val LocalAnimatedVisibilityScope = staticCompositionLocalOf<AnimatedVisibilityScope> { error("") }
+var refreshHome = false
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -66,11 +68,12 @@ fun NewsGraph(
           val viewModel: HomeViewModel = hiltViewModel()
           val detailViewModel: DetailViewModel =
             from.hiltSharedViewModel(navController = navController)
-
+          val items = viewModel.news.collectAsLazyPagingItems()
+          
           CompositionLocalProvider(value = LocalAnimatedVisibilityScope provides this@composable) {
             HomeScreen(
               paddingValues = paddingValues,
-              articles = viewModel.news.collectAsLazyPagingItems(),
+              articles = items,
               navigateToSearch = newsNavController::navigateToBottomBarRoute,
               navigateToDetail = {
                 detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
@@ -79,7 +82,7 @@ fun NewsGraph(
               },
               pullToRefreshLayoutState = viewModel.pullToRefreshState,
               onRefresh = {
-                viewModel.onEvent(HomeEvent.GetArticles)
+                items.refresh()
               },
               onExitApp = {
                 activity?.finish()

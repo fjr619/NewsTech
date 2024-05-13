@@ -1,9 +1,11 @@
 package com.fjr619.newsloc.data.remote
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.fjr619.newsloc.data.remote.dto.ErrorResponse
 import com.fjr619.newsloc.domain.model.Article
+import com.google.gson.Gson
+import retrofit2.HttpException
 
 class NewsPagingSource(
     private val newsApi: NewsApi,
@@ -32,8 +34,20 @@ class NewsPagingSource(
                 nextKey = if (totalNewsCount == newsResponse.totalResults) null else page + 1,
                 prevKey = null
             )
-        } catch (e: Exception) {
+        } catch (e: HttpException) {
             e.printStackTrace()
+
+            val errorResponse = e.response()?.run {
+                errorBody()?.let {
+                    val errorJson = it.string()
+                    Gson().fromJson(errorJson, ErrorResponse::class.java)
+                }
+            }
+
+            LoadResult.Error(
+                throwable = Throwable(message = errorResponse?.message ?: "AAAA")
+            )
+        } catch (e: Exception) {
             LoadResult.Error(
                 throwable = e
             )

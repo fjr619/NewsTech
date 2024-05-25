@@ -4,6 +4,7 @@ import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.domain.model.Source
 import com.fjr619.newsloc.util.composestateevents.StateEventWithContent
 import com.fjr619.newsloc.util.composestateevents.consumed
+import com.fjr619.newsloc.util.snackbar.SnackbarMessage
 import com.fjr619.newsloc.util.snackbar.UserMessage
 
 data class DetailViewState(
@@ -17,5 +18,5 @@ data class DetailViewState(
   ),
   val bookmark: Article? = null,
   val prefixSharedKey: String? = null,
-  val processSucceededEvent: StateEventWithContent<UserMessage> = consumed()
+  val snackbarMessage: SnackbarMessage? = null
 )

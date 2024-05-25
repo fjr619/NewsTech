@@ -1,14 +1,9 @@
 package com.fjr619.newsloc.presentation.navgraph
 
 import android.app.Activity
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -26,7 +21,6 @@ import androidx.navigation.navigation
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.fjr619.newsloc.presentation.bookmark.BookmarkScreen
 import com.fjr619.newsloc.presentation.bookmark.BookmarkViewModel
-import com.fjr619.newsloc.presentation.common.NewsSnackbarVisual
 import com.fjr619.newsloc.presentation.detail.DetailEvent
 import com.fjr619.newsloc.presentation.detail.DetailScreen
 import com.fjr619.newsloc.presentation.detail.DetailViewModel
@@ -34,35 +28,23 @@ import com.fjr619.newsloc.presentation.home.HomeScreen
 import com.fjr619.newsloc.presentation.home.HomeViewModel
 import com.fjr619.newsloc.presentation.search.SearchScreen
 import com.fjr619.newsloc.presentation.search.SearchViewModel
-import com.fjr619.newsloc.util.composestateevents.EventEffect
-import com.fjr619.newsloc.util.snackbar.LocalSnackbarController
-import com.fjr619.newsloc.util.snackbar.asString
+import com.fjr619.newsloc.util.snackbar.SnackbarMessageHandler
 
 val LocalAnimatedVisibilityScope = staticCompositionLocalOf<AnimatedVisibilityScope> { error("") }
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun NewsGraph(
-  paddingValues: PaddingValues,
   newsNavController: NewsNavController,
-//  onNavigateBottomBar: (MaterialNavScreen) -> Unit,
-//  onNavigateToDetail: () -> Unit,
-//  onNavigateBack: () -> Unit,
-//  onExitApp: () -> Unit
 ) {
 
   val navController = newsNavController.navController
-  val snackbarController = LocalSnackbarController.current
   val activity = LocalContext.current as? Activity
 
   SharedTransitionLayout {
     NavHost(
       navController = navController,
       startDestination = Route.NewsNavigation.route,
-      enterTransition = { fadeIn(animationSpec = tween(200)) },
-      exitTransition = { fadeOut(animationSpec = tween(200)) },
-      popEnterTransition = { fadeIn(animationSpec = tween(200)) },
-      popExitTransition = { fadeOut(animationSpec = tween(200)) },
     ) {
       navigation(
         route = Route.NewsNavigation.route,
@@ -118,21 +100,6 @@ fun NewsGraph(
           val detailViewModel: DetailViewModel =
             from.hiltSharedViewModel(navController = navController)
           val state by viewModel.state
-          val context = LocalContext.current
-          val detailViewState by detailViewModel.viewState.collectAsStateWithLifecycle()
-
-          EventEffect(
-            event = detailViewState.processSucceededEvent,
-            onConsumed = detailViewModel::onConsumedSucceededEvent,
-            action = {
-//              snackbarController.showMessage(
-//                NewsSnackbarVisual(
-//                  message = it.asString(context)
-//                ), onSnackbarResult = { result ->
-//                  Log.e("TAG", "action run ${result.name}")
-//                })
-            })
-
 
           CompositionLocalProvider(value = LocalAnimatedVisibilityScope provides this@composable) {
             BookmarkScreen(
@@ -148,20 +115,12 @@ fun NewsGraph(
 
         composable(route = Route.DetailsScreen.route) { from ->
           val viewModel: DetailViewModel = from.hiltSharedViewModel(navController = navController)
-          val context = LocalContext.current
           val viewState by viewModel.viewState.collectAsStateWithLifecycle()
 
-          EventEffect(
-            event = viewState.processSucceededEvent,
-            onConsumed = viewModel::onConsumedSucceededEvent,
-            action = {
-              snackbarController.showMessage(
-                NewsSnackbarVisual(
-                  message = it.asString(context)
-                ), onSnackbarResult = { result ->
-                  Log.e("TAG", "action run ${result.name}")
-                })
-            })
+          SnackbarMessageHandler(
+            snackbarMessage = viewState.snackbarMessage,
+            onDismissSnackbar = viewModel::dismissSnackbar
+          )
 
           CompositionLocalProvider(value = LocalAnimatedVisibilityScope provides this@composable) {
             DetailScreen(

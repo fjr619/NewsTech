@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.domain.usecase.news.NewsUseCases
+import com.fjr619.newsloc.presentation.common.NewsSnackbarVisual
 import com.fjr619.newsloc.util.composestateevents.consumed
 import com.fjr619.newsloc.util.composestateevents.triggered
+import com.fjr619.newsloc.util.snackbar.SnackbarMessage
 import com.fjr619.newsloc.util.snackbar.UserMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,49 +20,17 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(
   private val newsUseCases: NewsUseCases,
-//    @Assisted private val article: Article?
 ) : ViewModel() {
 
-//    private var _sideEffect: MutableSharedFlow<UiEffect> = MutableSharedFlow()
-//    val sideEffect = _sideEffect.asSharedFlow()
-//
-//    private var _bookmarkArticle = MutableStateFlow<Article?>(null)
-//    val bookMarkArticle = _bookmarkArticle.asStateFlow()
-//
-//    private var _article = MutableStateFlow<Article?>(null)
-//    val article = _article.asStateFlow()
-
-  private var _viewState = MutableStateFlow<DetailViewState>(DetailViewState())
+  private var _viewState = MutableStateFlow(DetailViewState())
   val viewState = _viewState.asStateFlow()
-
-//    @AssistedFactory
-//    interface Factory {
-//        fun create(article: Article?): DetailViewModel
-//    }
-
-//    @Suppress("UNCHECKED_CAST")
-//    companion object {
-//        fun provideFactory(
-//            assistedFactory: Factory,
-//            article: Article?
-//        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//                return assistedFactory.create(article) as T
-//            }
-//        }
-//    }
-
-
-//    init {
-//        Log.e("TAG", "init detail viewmodel $article")
-//        onEvent(DetailEvent.GetBookmarkArticle(article))
-//    }
 
   init {
     Log.e("TAG", "init detail viewmodel")
   }
 
   private suspend fun getBookmarkArticle(article: Article?) {
+    dismissSnackbar()
     _viewState.update {
       it.copy(
         bookmark = article?.let {
@@ -69,7 +39,6 @@ class DetailViewModel @Inject constructor(
       )
     }
   }
-
 
   fun onEvent(event: DetailEvent) {
     when (event) {
@@ -107,20 +76,17 @@ class DetailViewModel @Inject constructor(
     }
   }
 
-  fun onConsumedSucceededEvent() {
-    _viewState.update {
-      it.copy(
-        processSucceededEvent = consumed()
-      )
-    }
-  }
+  fun dismissSnackbar() = _viewState.update { it.copy(snackbarMessage = null) }
 
   private suspend fun deleteArticle(article: Article) {
     newsUseCases.deleteArticle(article = article)
     _viewState.update {
       it.copy(
         bookmark = null,
-        processSucceededEvent = triggered(UserMessage.Text("Article deleted"))
+        snackbarMessage = SnackbarMessage.from(
+          snackbarVisuals = NewsSnackbarVisual(message = "Article deleted"),
+          onSnackbarResult = {}
+        ),
       )
     }
   }
@@ -130,8 +96,10 @@ class DetailViewModel @Inject constructor(
     _viewState.update {
       it.copy(
         bookmark = article,
-        processSucceededEvent = triggered(UserMessage.Text("Article inserted"))
-      )
+        snackbarMessage = SnackbarMessage.from(
+          snackbarVisuals = NewsSnackbarVisual(message = "Article inserted"),
+          onSnackbarResult = {}
+        ),      )
     }
   }
 }

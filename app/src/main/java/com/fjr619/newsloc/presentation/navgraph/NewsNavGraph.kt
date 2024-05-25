@@ -5,10 +5,12 @@ import android.util.Log
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -28,7 +30,6 @@ import com.fjr619.newsloc.presentation.common.NewsSnackbarVisual
 import com.fjr619.newsloc.presentation.detail.DetailEvent
 import com.fjr619.newsloc.presentation.detail.DetailScreen
 import com.fjr619.newsloc.presentation.detail.DetailViewModel
-import com.fjr619.newsloc.presentation.home.HomeEvent
 import com.fjr619.newsloc.presentation.home.HomeScreen
 import com.fjr619.newsloc.presentation.home.HomeViewModel
 import com.fjr619.newsloc.presentation.search.SearchScreen
@@ -38,7 +39,6 @@ import com.fjr619.newsloc.util.snackbar.LocalSnackbarController
 import com.fjr619.newsloc.util.snackbar.asString
 
 val LocalAnimatedVisibilityScope = staticCompositionLocalOf<AnimatedVisibilityScope> { error("") }
-var refreshHome = false
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -59,6 +59,10 @@ fun NewsGraph(
     NavHost(
       navController = navController,
       startDestination = Route.NewsNavigation.route,
+      enterTransition = { fadeIn(animationSpec = tween(200)) },
+      exitTransition = { fadeOut(animationSpec = tween(200)) },
+      popEnterTransition = { fadeIn(animationSpec = tween(200)) },
+      popExitTransition = { fadeOut(animationSpec = tween(200)) },
     ) {
       navigation(
         route = Route.NewsNavigation.route,
@@ -69,10 +73,9 @@ fun NewsGraph(
           val detailViewModel: DetailViewModel =
             from.hiltSharedViewModel(navController = navController)
           val items = viewModel.news.collectAsLazyPagingItems()
-          
+
           CompositionLocalProvider(value = LocalAnimatedVisibilityScope provides this@composable) {
             HomeScreen(
-              paddingValues = paddingValues,
               articles = items,
               navigateToSearch = newsNavController::navigateToBottomBarRoute,
               navigateToDetail = {
@@ -99,7 +102,6 @@ fun NewsGraph(
 
           CompositionLocalProvider(value = LocalAnimatedVisibilityScope provides this@composable) {
             SearchScreen(
-              paddingValues = paddingValues,
               state = state,
               event = viewModel::onEvent,
               navigateToDetail = {
@@ -133,13 +135,14 @@ fun NewsGraph(
 
 
           CompositionLocalProvider(value = LocalAnimatedVisibilityScope provides this@composable) {
-            BookmarkScreen(paddingValues = paddingValues, state = state, navigateToDetails = {
-              detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
-              detailViewModel.onEvent(DetailEvent.SetPrefixSharedKey("bookmark"))
-              newsNavController.navigateToDetail()
-            }, onDelete = {
-              detailViewModel.onEvent(DetailEvent.UpsertDeleteArticle(it))
-            })
+            BookmarkScreen(
+              state = state, navigateToDetails = {
+                detailViewModel.onEvent(DetailEvent.GetDetailArticle(it))
+                detailViewModel.onEvent(DetailEvent.SetPrefixSharedKey("bookmark"))
+                newsNavController.navigateToDetail()
+              }, onDelete = {
+                detailViewModel.onEvent(DetailEvent.UpsertDeleteArticle(it))
+              })
           }
         }
 

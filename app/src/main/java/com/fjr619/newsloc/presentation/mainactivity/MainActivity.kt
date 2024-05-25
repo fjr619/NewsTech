@@ -66,18 +66,17 @@ class MainActivity : AppCompatActivity() {
       }
 
     setContent {
-      val windowSizeClass = calculateWindowSizeClass(activity = this)
-      val navigationType by remember(windowSizeClass.widthSizeClass) {
-        derivedStateOf {
-          when (windowSizeClass.widthSizeClass) {
-            WindowWidthSizeClass.Compact -> NavigationType.BOTTOM_NAV
-            WindowWidthSizeClass.Medium -> NavigationType.NAV_RAIL
-            WindowWidthSizeClass.Expanded -> NavigationType.PERMANENT_NAV_DRAWER
-            else -> NavigationType.BOTTOM_NAV
-          }
-        }
-
-      }
+//      val windowSizeClass = calculateWindowSizeClass(activity = this)
+//      val navigationType by remember(windowSizeClass.widthSizeClass) {
+//        derivedStateOf {
+//          when (windowSizeClass.widthSizeClass) {
+//            WindowWidthSizeClass.Compact -> NavigationType.BOTTOM_NAV
+//            WindowWidthSizeClass.Medium -> NavigationType.NAV_RAIL
+//            WindowWidthSizeClass.Expanded -> NavigationType.PERMANENT_NAV_DRAWER
+//            else -> NavigationType.BOTTOM_NAV
+//          }
+//        }
+//      }
 
       NewsLOCTheme {
         ChangeSystemBarsTheme(!isSystemInDarkTheme())
@@ -88,7 +87,7 @@ class MainActivity : AppCompatActivity() {
           OnboardingGraph(
             newsNavController = rememberNewsNavController(),
             startDestination = viewModel.startDestination.value,
-            navigationType = navigationType,
+//            navigationType = navigationType,
             promptManager = promptManager
           )
         }

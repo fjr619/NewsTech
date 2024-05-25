@@ -22,7 +22,7 @@ import com.fjr619.newsloc.presentation.onboarding.OnboardingViewModel
 @Composable
 fun OnboardingGraph(
   newsNavController: NewsNavController,
-  navigationType: NavigationType,
+//  navigationType: NavigationType,
   startDestination: String,
   promptManager: BiometricPromptManager
 ) {
@@ -49,7 +49,7 @@ fun OnboardingGraph(
       val viewModel: NewsNavigatorViewModel = hiltViewModel()
       val countBookmark by viewModel.state
       NewsNavigator(
-        navigationType = navigationType,
+//        navigationType = navigationType,
         countBookmark = countBookmark.articles.size
       )
     }

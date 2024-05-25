@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
@@ -113,7 +115,7 @@ fun SharedTransitionScope.DetailScreen(
                     color = MaterialTheme.customColorsPalette.textTitle
                 )
                 Text(
-                    text = article.content,
+                    text = "${article.content} \n${article.content} \n ${article.content} \n${article.content} \n${article.content}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.customColorsPalette.body
                 )

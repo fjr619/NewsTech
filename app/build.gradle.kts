@@ -71,7 +71,8 @@ dependencies {
       implementation("androidx.compose.material:material")
     implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.compose.ui:ui:1.7.0-alpha08")
-    implementation("androidx.compose.animation:animation:1.7.0-alpha08")
+    implementation("androidx.compose.animation:animation:1.7.0-beta01")
+
 //    implementation("androidx.compose.foundation:foundation")
 
     testImplementation("junit:junit:4.13.2")
@@ -120,4 +121,9 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 
     implementation("androidx.biometric:biometric:1.1.0")
+
+    implementation ("androidx.compose.material3.adaptive:adaptive:1.0.0-beta01")
+    implementation ("androidx.compose.material3.adaptive:adaptive-layout:1.0.0-beta01")
+    implementation ("androidx.compose.material3.adaptive:adaptive-navigation:1.0.0-beta01")
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.3.0-beta01")
 }

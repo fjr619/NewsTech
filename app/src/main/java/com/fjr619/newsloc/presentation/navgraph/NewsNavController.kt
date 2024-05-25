@@ -138,7 +138,7 @@ class NewsNavController(
   }
 
   @Composable
-  private fun currentDestination(): NavDestination? {
+  fun currentDestination(): NavDestination? {
     return navController.currentBackStackEntryAsState().value?.destination
   }
 }

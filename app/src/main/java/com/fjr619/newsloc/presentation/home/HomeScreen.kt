@@ -52,12 +52,11 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalSharedTransitionApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun SharedTransitionScope.HomeScreen(
-//    paddingValues: PaddingValues,
+fun HomeScreen(
   articles: LazyPagingItems<Article>,
   navigateToSearch: (MaterialNavScreen) -> Unit,
   navigateToDetail: (Article) -> Unit,
-  onExitApp: () -> Unit,
+//  onExitApp: () -> Unit,
   pullToRefreshLayoutState: PullToRefreshLayoutState,
   onRefresh: () -> Unit
 ) {
@@ -74,26 +73,26 @@ fun SharedTransitionScope.HomeScreen(
     }
   }
 
-  var exit by remember { mutableStateOf(false) }
-  val context = LocalContext.current
-
-  //https://stackoverflow.com/a/77613696
-  //handle double back press for exit application
-  LaunchedEffect(key1 = exit) {
-    if (exit) {
-      delay(2000)
-      exit = false
-    }
-  }
-
-  BackHandler {
-    if (exit) {
-      onExitApp()
-    } else {
-      exit = true
-      Toast.makeText(context, "Press again to exit", Toast.LENGTH_SHORT).show()
-    }
-  }
+//  var exit by remember { mutableStateOf(false) }
+//  val context = LocalContext.current
+//
+//  //https://stackoverflow.com/a/77613696
+//  //handle double back press for exit application
+//  LaunchedEffect(key1 = exit) {
+//    if (exit) {
+//      delay(2000)
+//      exit = false
+//    }
+//  }
+//
+//  BackHandler {
+//    if (exit) {
+//      onExitApp()
+//    } else {
+//      exit = true
+//      Toast.makeText(context, "Press again to exit", Toast.LENGTH_SHORT).show()
+//    }
+//  }
 
   Scaffold(
     topBar = {
@@ -148,7 +147,6 @@ fun SharedTransitionScope.HomeScreen(
                 onRefresh = onRefresh,
             ) {
                 ArticlesList(
-                    prefixSharedKey = "home",
                     articles = articles,
                     pullToRefreshLayoutState = pullToRefreshLayoutState,
                     onClickCard = navigateToDetail

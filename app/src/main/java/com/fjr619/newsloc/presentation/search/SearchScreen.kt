@@ -23,7 +23,7 @@ import com.fjr619.newsloc.presentation.common.SearchBar
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun SharedTransitionScope.SearchScreen(
+fun SearchScreen(
     state: SearchState,
     event: (SearchEvent) -> Unit,
     navigateToDetail: (Article) -> Unit,
@@ -55,7 +55,6 @@ fun SharedTransitionScope.SearchScreen(
             state.articles?.let {
                 val articles = it.collectAsLazyPagingItems()
                 ArticlesList(
-                    prefixSharedKey = "search",
                     articles = articles,
                     onClickCard = navigateToDetail,
                 )

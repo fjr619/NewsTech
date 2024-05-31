@@ -63,16 +63,6 @@ class DetailViewModel @Inject constructor(
           }
         }
       }
-
-      is DetailEvent.SetPrefixSharedKey -> {
-        viewModelScope.launch {
-          _viewState.update {
-            it.copy(
-              prefixSharedKey = event.prefixSharedKey
-            )
-          }
-        }
-      }
     }
   }
 

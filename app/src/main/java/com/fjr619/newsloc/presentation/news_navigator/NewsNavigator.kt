@@ -54,12 +54,11 @@ fun NewsNavigator(
   val showNavigator = newsNavController.showNavigation {
     screens
   }
-  val customNavSuiteType =
+  val customNavSuiteType = remember(showNavigator) {
     if (showNavigator) {
       with(adaptiveInfo) {
-        if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) {
-          NavigationSuiteType.NavigationDrawer
-        } else if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM) {
+        println("adaptive info $adaptiveInfo")
+        if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM) {
           NavigationSuiteType.NavigationRail
         } else {
           NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo)
@@ -68,6 +67,8 @@ fun NewsNavigator(
     } else {
       NavigationSuiteType.None
     }
+  }
+
 
 
   val snackbarHostState = remember { SnackbarHostState() }
@@ -86,34 +87,33 @@ fun NewsNavigator(
       navigationSuiteItems = {
         screens.forEach { screen ->
           item(
-            icon = {
-              BadgedBox(badge = {
-                if (screen.hasBadge && countBookmark != 0)
-                  Badge {
-                    countBookmark.toString()
-                      .mapIndexed { index, c -> Digit(c, countBookmark, index) }
-                      .forEach { digit ->
-                        AnimatedContent(
-                          targetState = digit,
-                          transitionSpec = {
-                            if (targetState > initialState) {
-                              slideInVertically { -it } togetherWith slideOutVertically { it }
-                            } else {
-                              slideInVertically { it } togetherWith slideOutVertically { -it }
-                            }
-                          }, label = ""
-                        ) { digit ->
-                          Text(text = "${digit.digitChar}")
-                        }
+            badge = {
+              if (screen.hasBadge && countBookmark != 0)
+                Badge {
+                  countBookmark.toString()
+                    .mapIndexed { index, c -> Digit(c, countBookmark, index) }
+                    .forEach { digit ->
+                      AnimatedContent(
+                        targetState = digit,
+                        transitionSpec = {
+                          if (targetState > initialState) {
+                            slideInVertically { -it } togetherWith slideOutVertically { it }
+                          } else {
+                            slideInVertically { it } togetherWith slideOutVertically { -it }
+                          }
+                        }, label = ""
+                      ) { digit ->
+                        Text(text = "${digit.digitChar}")
                       }
-                  }
-              }) {
-                Icon(
-                  modifier = Modifier.size(20.dp),
-                  imageVector = screen.icon,
-                  contentDescription = null
-                )
-              }
+                    }
+                }
+            },
+            icon = {
+              Icon(
+                modifier = Modifier.size(20.dp),
+                imageVector = screen.icon,
+                contentDescription = null
+              )
             },
             label = {
               Text(text = screen.title, style = MaterialTheme.typography.labelSmall)

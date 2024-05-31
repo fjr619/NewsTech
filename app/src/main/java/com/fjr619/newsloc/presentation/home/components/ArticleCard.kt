@@ -1,8 +1,6 @@
 package com.fjr619.newsloc.presentation.home.components
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,99 +22,82 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.fjr619.newsloc.R
 import com.fjr619.newsloc.domain.model.Article
-import com.fjr619.newsloc.domain.model.Source
 import com.fjr619.newsloc.presentation.Dimens
 import com.fjr619.newsloc.presentation.Dimens.ArticleCardSize
 import com.fjr619.newsloc.presentation.Dimens.ExtraSmallPadding
 import com.fjr619.newsloc.presentation.Dimens.ExtraSmallPadding2
 import com.fjr619.newsloc.presentation.Dimens.SmallIconSize
-import com.fjr619.newsloc.presentation.navgraph.LocalAnimatedVisibilityScope
-import com.fjr619.newsloc.ui.theme.NewsLOCTheme
 import com.fjr619.newsloc.ui.theme.customColorsPalette
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun SharedTransitionScope.ArticleCard(
-    prefixSharedKey: String,
-    modifier: Modifier = Modifier,
-    article: Article,
-    onClick: (() -> Unit)? = null
+fun ArticleCard(
+  modifier: Modifier = Modifier,
+  article: Article,
+  onClick: (() -> Unit)? = null
 ) {
+  val context = LocalContext.current
+  Row(
+    modifier = modifier
+        .clickable { onClick?.invoke() }
+        .padding(horizontal = Dimens.MediumPadding1, vertical = ExtraSmallPadding2),
 
-    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
+    ) {
+    AsyncImage(
+      modifier = Modifier
+          .size(ArticleCardSize)
+          .clip(MaterialTheme.shapes.medium),
+      model = ImageRequest.Builder(context)
+        .data(article.urlToImage)
+        .error(R.drawable.ic_splash)
+        .build(),
+      contentDescription = null,
+      contentScale = ContentScale.Crop
+    )
 
-    val context = LocalContext.current
-    Row(
-        modifier = modifier
-            .clickable { onClick?.invoke() }
-            .padding(horizontal = Dimens.MediumPadding1, vertical = ExtraSmallPadding2),
+    Spacer(modifier = Modifier.width(ExtraSmallPadding2))
 
-        ) {
-        AsyncImage(
-            modifier = Modifier
-                .sharedElement(
-                    state = rememberSharedContentState(key = "$prefixSharedKey-image-${article.url}"),
-                    animatedVisibilityScope = animatedVisibilityScope
-                )
-                .size(ArticleCardSize)
-                .clip(MaterialTheme.shapes.medium),
-            model = ImageRequest.Builder(context)
-                .data(article.urlToImage)
-                .error(R.drawable.ic_splash)
-                .build(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop
+    Column(
+      verticalArrangement = Arrangement.SpaceAround,
+      modifier = Modifier
+          .padding(horizontal = ExtraSmallPadding)
+          .height(ArticleCardSize)
+    ) {
+      Text(
+        text = article.title,
+        style = MaterialTheme.typography.bodyMedium.copy(),
+        color = MaterialTheme.customColorsPalette.textTitle,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis
+      )
+      Row(
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        Text(
+          text = article.source.name,
+          style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+          color = MaterialTheme.customColorsPalette.body
         )
-
         Spacer(modifier = Modifier.width(ExtraSmallPadding2))
-
-        Column(
-            verticalArrangement = Arrangement.SpaceAround,
-            modifier = Modifier
-                .padding(horizontal = ExtraSmallPadding)
-                .height(ArticleCardSize)
-        ) {
-            Text(
-                modifier = Modifier.sharedBounds(
-                    rememberSharedContentState(key = "$prefixSharedKey-text-${article.url}"),
-                    animatedVisibilityScope
-                ),
-                text = article.title,
-                style = MaterialTheme.typography.bodyMedium.copy(),
-                color = MaterialTheme.customColorsPalette.textTitle,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = article.source.name,
-                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.customColorsPalette.body
-                )
-                Spacer(modifier = Modifier.width(ExtraSmallPadding2))
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_time),
-                    contentDescription = null,
-                    modifier = Modifier.size(SmallIconSize),
-                    tint = MaterialTheme.customColorsPalette.body
-                )
-                Spacer(modifier = Modifier.width(ExtraSmallPadding))
-                Text(
-                    text = article.publishedAt,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.customColorsPalette.body
-                )
-            }
-        }
+        Icon(
+          painter = painterResource(id = R.drawable.ic_time),
+          contentDescription = null,
+          modifier = Modifier.size(SmallIconSize),
+          tint = MaterialTheme.customColorsPalette.body
+        )
+        Spacer(modifier = Modifier.width(ExtraSmallPadding))
+        Text(
+          text = article.publishedAt,
+          style = MaterialTheme.typography.labelSmall,
+          color = MaterialTheme.customColorsPalette.body
+        )
+      }
     }
+  }
 }
 
 //@OptIn(ExperimentalSharedTransitionApi::class)

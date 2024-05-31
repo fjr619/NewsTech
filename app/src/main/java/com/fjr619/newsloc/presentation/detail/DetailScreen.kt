@@ -30,21 +30,17 @@ import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.presentation.Dimens.ArticleImageHeight
 import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
 import com.fjr619.newsloc.presentation.detail.components.DetailTopBar
-import com.fjr619.newsloc.presentation.navgraph.LocalAnimatedVisibilityScope
 import com.fjr619.newsloc.ui.theme.customColorsPalette
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SharedTransitionScope.DetailScreen(
-    prefixSharedKey: String,
+fun DetailScreen(
     article: Article,
     bookmarkArticle: Article?,
     event: (DetailEvent) -> Unit,
     navigateUp: () -> Unit
 ) {
     val context = LocalContext.current
-    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
 
     Scaffold(
         modifier = Modifier
@@ -95,10 +91,6 @@ fun SharedTransitionScope.DetailScreen(
                         .build(),
                     contentDescription = null,
                     modifier = Modifier
-                        .sharedElement(
-                            rememberSharedContentState(key = "$prefixSharedKey-image-${article.url}"),
-                            animatedVisibilityScope
-                        )
                         .fillMaxWidth()
                         .height(ArticleImageHeight)
                         .clip(MaterialTheme.shapes.medium),
@@ -106,10 +98,6 @@ fun SharedTransitionScope.DetailScreen(
                 )
                 Spacer(modifier = Modifier.height(MediumPadding1))
                 Text(
-                    modifier = Modifier.sharedBounds(
-                        rememberSharedContentState(key = "$prefixSharedKey-text-${article.url}"),
-                        animatedVisibilityScope
-                    ),
                     text = article.title,
                     style = MaterialTheme.typography.displaySmall,
                     color = MaterialTheme.customColorsPalette.textTitle

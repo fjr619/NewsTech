@@ -12,12 +12,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.window.core.layout.WindowWidthSizeClass
 import com.fjr619.newsloc.R
 import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.ui.theme.NewsLOCTheme
@@ -33,6 +35,8 @@ fun DetailTopBar(
     onBackClick: () -> Unit,
 ) {
 
+    val adaptiveInfo = currentWindowAdaptiveInfo()
+
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.topAppBarColors(
@@ -42,15 +46,16 @@ fun DetailTopBar(
         ),
         title = {},
         navigationIcon = {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back_arrow),
-                    contentDescription = null,
-                )
+            if (adaptiveInfo.windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.EXPANDED) {
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_back_arrow),
+                        contentDescription = null,
+                    )
+                }
             }
         },
         actions = {
-
             IconButton(onClick = onBookMarkClick) {
                 Icon(painter = painterResource(if (bookmarkArticle == null) R.drawable.ic_bookmark else R.drawable.ic_bookmar_filled), contentDescription = null)
             }

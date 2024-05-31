@@ -21,7 +21,7 @@ import com.fjr619.newsloc.presentation.common.ArticlesListBookmark
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun SharedTransitionScope.BookmarkScreen(
+fun BookmarkScreen(
     state: BookmarkState,
     navigateToDetails: (Article) -> Unit,
     onDelete: (Article) -> Unit

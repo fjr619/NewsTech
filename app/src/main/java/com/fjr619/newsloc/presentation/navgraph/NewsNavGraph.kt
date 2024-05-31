@@ -1,6 +1,8 @@
 package com.fjr619.newsloc.presentation.navgraph
 
 import android.app.Activity
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -10,8 +12,11 @@ import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.NavigableListDetailPaneScaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -32,6 +37,7 @@ import com.fjr619.newsloc.presentation.home.HomeViewModel
 import com.fjr619.newsloc.presentation.search.SearchScreen
 import com.fjr619.newsloc.presentation.search.SearchViewModel
 import com.fjr619.newsloc.util.snackbar.SnackbarMessageHandler
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
@@ -41,6 +47,7 @@ fun NewsGraph(
 
   val navController = newsNavController.navController
   val activity = LocalContext.current as? Activity
+  val context = LocalContext.current
 
   NavHost(
     navController = navController,
@@ -59,6 +66,26 @@ fun NewsGraph(
         val detailViewModel: DetailViewModel = hiltViewModel()
         val items = viewModel.news.collectAsLazyPagingItems()
         val detailViewState by detailViewModel.viewState.collectAsStateWithLifecycle()
+
+
+        //https://stackoverflow.com/a/77613696
+        //handle double back press for exit application
+        var exit by remember { mutableStateOf(false) }
+        LaunchedEffect(key1 = exit) {
+          if (exit) {
+            delay(2000)
+            exit = false
+          }
+        }
+
+        BackHandler {
+          if (exit) {
+            activity?.finish()
+          } else {
+            exit = true
+            Toast.makeText(context, "Press again to exit", Toast.LENGTH_SHORT).show()
+          }
+        }
 
         SnackbarMessageHandler(
           snackbarMessage = detailViewState.snackbarMessage,

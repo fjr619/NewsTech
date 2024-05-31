@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -46,69 +48,82 @@ fun DetailScreen(
         modifier = Modifier
             .fillMaxSize(),
         topBar = {
-            DetailTopBar(
-                bookmarkArticle = bookmarkArticle,
-                onBrowsingClick = {
-                    Intent(Intent.ACTION_VIEW).also {
-                        it.data = Uri.parse(article.url)
-                        if (it.resolveActivity(context.packageManager) != null) {
-                            context.startActivity(it)
+            if (article.title.isNotEmpty()) {
+                DetailTopBar(
+                    bookmarkArticle = bookmarkArticle,
+                    onBrowsingClick = {
+                        Intent(Intent.ACTION_VIEW).also {
+                            it.data = Uri.parse(article.url)
+                            if (it.resolveActivity(context.packageManager) != null) {
+                                context.startActivity(it)
+                            }
                         }
-                    }
-                },
-                onShareClick = {
-                    Intent(Intent.ACTION_SEND).also {
-                        it.putExtra(Intent.EXTRA_TEXT, article.url)
-                        it.type = "text/plain"
-                        if (it.resolveActivity(context.packageManager) != null) {
-                            context.startActivity(it)
+                    },
+                    onShareClick = {
+                        Intent(Intent.ACTION_SEND).also {
+                            it.putExtra(Intent.EXTRA_TEXT, article.url)
+                            it.type = "text/plain"
+                            if (it.resolveActivity(context.packageManager) != null) {
+                                context.startActivity(it)
+                            }
                         }
-                    }
-                },
-                onBookMarkClick = {
-                    Log.e("TAG","onBookMarkClick")
-                    event(DetailEvent.UpsertDeleteArticle(article))
-                },
-                onBackClick = navigateUp
-            )
-        }
-    ) {paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(paddingValues),
-            contentPadding = PaddingValues(
-                start = MediumPadding1,
-                end = MediumPadding1,
-            )
-        ) {
-            item {
-                AsyncImage(
-                    model = ImageRequest
-                        .Builder(context = context)
-                        .data(article.urlToImage)
-                        .error(R.drawable.ic_logo)
-                        .build(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(ArticleImageHeight)
-                        .clip(MaterialTheme.shapes.medium),
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(modifier = Modifier.height(MediumPadding1))
-                Text(
-                    text = article.title,
-                    style = MaterialTheme.typography.displaySmall,
-                    color = MaterialTheme.customColorsPalette.textTitle
-                )
-                Text(
-                    text = "${article.content} \n${article.content} \n ${article.content} \n${article.content} \n${article.content}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.customColorsPalette.body
+                    },
+                    onBookMarkClick = {
+                        Log.e("TAG","onBookMarkClick")
+                        event(DetailEvent.UpsertDeleteArticle(article))
+                    },
+                    onBackClick = navigateUp
                 )
             }
+
         }
+    ) {paddingValues ->
+        if (article.title.isNotEmpty()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(paddingValues),
+                contentPadding = PaddingValues(
+                    start = MediumPadding1,
+                    end = MediumPadding1,
+                )
+            ) {
+                item {
+                    AsyncImage(
+                        model = ImageRequest
+                            .Builder(context = context)
+                            .data(article.urlToImage)
+                            .error(R.drawable.ic_logo)
+                            .build(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(ArticleImageHeight)
+                            .clip(MaterialTheme.shapes.medium),
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(modifier = Modifier.height(MediumPadding1))
+                    Text(
+                        text = article.title,
+                        style = MaterialTheme.typography.displaySmall,
+                        color = MaterialTheme.customColorsPalette.textTitle
+                    )
+                    Text(
+                        text = "${article.content} \n${article.content} \n ${article.content} \n${article.content} \n${article.content}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.customColorsPalette.body
+                    )
+                }
+            }
+        } else {
+            Box(
+                modifier = Modifier.fillMaxSize().padding(paddingValues),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "NO DATA")
+            }
+        }
+
     }
 }
 

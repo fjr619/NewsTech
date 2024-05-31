@@ -74,7 +74,7 @@ class DetailViewModel @Inject constructor(
       it.copy(
         bookmark = null,
         snackbarMessage = SnackbarMessage.from(
-          snackbarVisuals = NewsSnackbarVisual(message = "Article deleted"),
+          snackbarVisuals = NewsSnackbarVisual(message = "Article deleted", isError = true),
           onSnackbarResult = {}
         ),
       )

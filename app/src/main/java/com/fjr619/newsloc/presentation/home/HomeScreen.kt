@@ -73,26 +73,7 @@ fun HomeScreen(
     }
   }
 
-//  var exit by remember { mutableStateOf(false) }
-//  val context = LocalContext.current
-//
-//  //https://stackoverflow.com/a/77613696
-//  //handle double back press for exit application
-//  LaunchedEffect(key1 = exit) {
-//    if (exit) {
-//      delay(2000)
-//      exit = false
-//    }
-//  }
-//
-//  BackHandler {
-//    if (exit) {
-//      onExitApp()
-//    } else {
-//      exit = true
-//      Toast.makeText(context, "Press again to exit", Toast.LENGTH_SHORT).show()
-//    }
-//  }
+
 
   Scaffold(
     topBar = {

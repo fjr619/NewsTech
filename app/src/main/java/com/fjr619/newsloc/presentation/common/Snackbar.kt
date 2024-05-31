@@ -28,7 +28,7 @@ fun NewsSnackbar(
 ) {
   val isError = (data.visuals as? NewsSnackbarVisual)?.isError ?: false
   Snackbar(
-    modifier = Modifier.padding(16.dp).clip(RoundedCornerShape(20.dp)),
+    modifier = Modifier.padding(16.dp).clip(RoundedCornerShape(0.dp)),
     containerColor = if (isError)
       MaterialTheme.colorScheme.error
     else

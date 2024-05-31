@@ -2,25 +2,25 @@ package com.fjr619.newsloc.presentation.news_navigator
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -36,6 +36,7 @@ import com.fjr619.newsloc.util.compareTo
 import com.fjr619.newsloc.util.snackbar.ProvideSnackbarController
 
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NewsNavigator(
@@ -54,12 +55,18 @@ fun NewsNavigator(
   val showNavigator = newsNavController.showNavigation {
     screens
   }
-  val customNavSuiteType = remember(showNavigator) {
+
+  //ketika di navigation item bentukannya list-detail, dan detailnya lagi muncul
+  val isRootNavigationDetailAppear by newsNavController.isRootNavigationDetailApppear()
+
+  val customNavSuiteType = remember(showNavigator, isRootNavigationDetailAppear) {
     if (showNavigator) {
       with(adaptiveInfo) {
         println("adaptive info $adaptiveInfo")
         if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM) {
           NavigationSuiteType.NavigationRail
+        } else if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT && isRootNavigationDetailAppear){
+          NavigationSuiteType.None
         } else {
           NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo)
         }

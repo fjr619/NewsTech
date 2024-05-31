@@ -7,8 +7,14 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
+import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.Lifecycle
@@ -48,16 +54,25 @@ sealed class MaterialNavScreen(
   )
 }
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun rememberNewsNavController(
-  navHostController: NavHostController = rememberNavController()
-): NewsNavController = remember(navHostController) {
-  NewsNavController(navHostController)
+  navHostController: NavHostController = rememberNavController(),
+  navigatorHome: ThreePaneScaffoldNavigator<Any> = rememberListDetailPaneScaffoldNavigator<Any>(),
+  navigatorSearch: ThreePaneScaffoldNavigator<Any> = rememberListDetailPaneScaffoldNavigator<Any>(),
+  navigatorBookmark: ThreePaneScaffoldNavigator<Any> = rememberListDetailPaneScaffoldNavigator<Any>()
+): NewsNavController {
+  return remember(navHostController) {
+    NewsNavController(navHostController, navigatorHome, navigatorSearch, navigatorBookmark)
+  }
 }
 
 @Stable
-class NewsNavController(
-  val navController: NavHostController
+class NewsNavController @OptIn(ExperimentalMaterial3AdaptiveApi::class) constructor(
+  val navController: NavHostController,
+  val navigatorHome: ThreePaneScaffoldNavigator<Any>,
+  val navigatorSearch: ThreePaneScaffoldNavigator<Any>,
+  val navigatorBookmark: ThreePaneScaffoldNavigator<Any>
 ) {
   private val currentRoute: String? = navController.currentDestination?.route
 
@@ -79,8 +94,23 @@ class NewsNavController(
 //    return if (graph is NavGraph) findStartDestination(graph.findStartDestination()) else graph
 //  }
 
+  @OptIn(ExperimentalMaterial3AdaptiveApi::class)
   fun navigateToBottomBarRoute(materialNavScreen: MaterialNavScreen) {
     if (lifecycleIsResumed() && materialNavScreen.route != currentRoute) {
+
+      //reset balik ke list
+      if (navigatorHome.canNavigateBack()) {
+        navigatorHome.navigateBack()
+      }
+
+      if (navigatorSearch.canNavigateBack()) {
+        navigatorSearch.navigateBack()
+      }
+
+      if (navigatorBookmark.canNavigateBack()) {
+        navigatorBookmark.navigateBack()
+      }
+
       navController.navigate(materialNavScreen.route) {
         // Pop up to the start destination of the graph to
         // avoid building up a large stack of destinations
@@ -92,9 +122,21 @@ class NewsNavController(
         // reselecting the same item
         launchSingleTop = true
         // Restore state when reselecting a previously selected item
-        restoreState = true
 
+        if (materialNavScreen.route != MaterialNavScreen.Search.route) {
+          restoreState = true
+        }
       }
+    }
+  }
+
+  @OptIn(ExperimentalMaterial3AdaptiveApi::class)
+  @Composable
+  fun isRootNavigationDetailApppear(): State<Boolean> {
+    return remember(navigatorHome.currentDestination, navigatorSearch.currentDestination, navigatorBookmark.currentDestination) {
+      mutableStateOf( navigatorHome.currentDestination?.pane == ListDetailPaneScaffoldRole.Detail ||
+        navigatorSearch.currentDestination?.pane == ListDetailPaneScaffoldRole.Detail ||
+        navigatorBookmark.currentDestination?.pane == ListDetailPaneScaffoldRole.Detail)
     }
   }
 

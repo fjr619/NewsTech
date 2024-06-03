@@ -53,38 +53,45 @@ import kotlinx.coroutines.launch
 @Composable
 fun ArticlesListBookmark(
   modifier: Modifier = Modifier,
-  articles: List<Article>,
+  articles: LazyPagingItems<Article>?,
   onClickCard: (Article) -> Unit,
   onDelete: (Article) -> Unit
 ) {
-  if (articles.isEmpty()) {
-    EmptyScreen()
-  }
 
-  LazyColumn(
-    modifier = modifier.fillMaxSize(),
+  articles?.let {
+    if (it.itemCount != 0) {
+      LazyColumn(
+        modifier = modifier.fillMaxSize(),
 //        verticalArrangement = Arrangement.spacedBy(MediumPadding1),
 //        contentPadding = PaddingValues(all = ExtraSmallPadding2)
-  ) {
+      ) {
 
-    items(
-      items = articles,
-      key = {
-        it.hashCode()
+        items(
+          items = it.itemSnapshotList,
+          key = { article ->
+            article.hashCode()
+          }
+        ) {article ->
+          article?.let { nonNullArticle ->
+            SwipeBox(onDelete = {
+
+              onDelete(nonNullArticle)
+            }, modifier = Modifier.animateItem()) {
+              ArticleCard(
+                modifier = Modifier
+                  .clip(RoundedCornerShape(16.dp))
+                  .background(MaterialTheme.colorScheme.surface),
+                article = nonNullArticle, onClick = { onClickCard(nonNullArticle) })
+            }
+          }
+        }
       }
-    ) {
-      SwipeBox(onDelete = {
-        onDelete(it)
-      }, modifier = Modifier.animateItem()) {
-        ArticleCard(
-          modifier = Modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surface),
-          article = it, onClick = { onClickCard(it) })
-      }
+    } else {
+      EmptyScreen()
     }
+  } ?: run {
+    EmptyScreen()
   }
-
 }
 
 @OptIn(ExperimentalSharedTransitionApi::class)

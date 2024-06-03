@@ -10,6 +10,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.fjr619.newsloc.presentation.biometric.BiometricPromptManager
 import com.fjr619.newsloc.presentation.biometric.BiometricScreen
 import com.fjr619.newsloc.presentation.biometric.BiometricViewModel
@@ -18,6 +19,7 @@ import com.fjr619.newsloc.presentation.news_navigator.NewsNavigator
 import com.fjr619.newsloc.presentation.news_navigator.NewsNavigatorViewModel
 import com.fjr619.newsloc.presentation.onboarding.OnboardingScreen
 import com.fjr619.newsloc.presentation.onboarding.OnboardingViewModel
+import kotlinx.coroutines.flow.count
 
 @Composable
 fun OnboardingGraph(
@@ -50,7 +52,7 @@ fun OnboardingGraph(
       val countBookmark by viewModel.state
       NewsNavigator(
 //        navigationType = navigationType,
-        countBookmark = countBookmark.articles.size
+        countBookmark = countBookmark.articles?.collectAsLazyPagingItems()?.itemCount ?: 0
       )
     }
 

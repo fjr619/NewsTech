@@ -1,5 +1,6 @@
 package com.fjr619.newsloc.data.local
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -17,7 +18,7 @@ interface NewsDao {
     suspend fun delete(article: Article)
 
     @Query("SELECT * FROM Article")
-    fun getArticles(): Flow<List<Article>>
+    fun getArticles(): PagingSource<Int, Article>
 
     @Query("SELECT * FROM Article WHERE url=:url")
     suspend fun getArticle(url: String): Article?

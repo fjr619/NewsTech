@@ -6,7 +6,7 @@ import com.fjr619.newsloc.domain.usecase.appentry.ReadAppEntry
 import com.fjr619.newsloc.domain.usecase.appentry.SaveAppEntry
 import com.fjr619.newsloc.domain.usecase.news.DeleteArticle
 import com.fjr619.newsloc.domain.usecase.news.GetArticle
-import com.fjr619.newsloc.domain.usecase.news.GetArticles
+import com.fjr619.newsloc.domain.usecase.news.GetBookmarks
 import com.fjr619.newsloc.domain.usecase.news.GetNews
 import com.fjr619.newsloc.domain.usecase.news.NewsUseCases
 import com.fjr619.newsloc.domain.usecase.news.SearchNews
@@ -57,7 +57,7 @@ object AppModule {
         getNews: GetNews,
         searchNews: SearchNews,
         deleteArticle: DeleteArticle,
-        getArticles: GetArticles,
+        getBookmarks: GetBookmarks,
         getArticle: GetArticle,
         upsertArticle: UpsertArticle,
     ) = NewsUseCases(
@@ -65,7 +65,7 @@ object AppModule {
         searchNews = searchNews,
         deleteArticle = deleteArticle,
         getArticle = getArticle,
-        getArticles = getArticles,
+        getBookmarks = getBookmarks,
         upsertArticle = upsertArticle
     )
 }

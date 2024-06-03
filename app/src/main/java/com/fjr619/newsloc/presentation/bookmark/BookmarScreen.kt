@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.fjr619.newsloc.domain.model.Article
 import com.fjr619.newsloc.presentation.Dimens.MediumPadding1
 import com.fjr619.newsloc.presentation.common.ArticlesListBookmark
@@ -47,11 +48,14 @@ fun BookmarkScreen(
 
 //        Spacer(modifier = Modifier.height(16.dp))
 
-            ArticlesListBookmark(
-                articles = state.articles,
-                onClickCard = navigateToDetails,
-                onDelete = onDelete
-            )
+            state.articles?.let {
+                ArticlesListBookmark(
+                    articles = it.collectAsLazyPagingItems(),
+                    onClickCard = navigateToDetails,
+                    onDelete = onDelete
+                )
+            }
+
         }
     }
 
